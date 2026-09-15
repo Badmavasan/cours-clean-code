@@ -152,3 +152,67 @@ inventaire.py:175: unused variable 'ref' (100% confidence)
 Les entrées à 60 % qui désignent les fonctions publiques du module ne sont pas
 des faux positifs de l'outil, ce sont des fonctions appelées depuis l'extérieur.
 Seules `maj_prix`, `STOCK`, `i`, `ref` et `p` sont réellement mortes.
+
+---
+
+## 2. Catalogue des odeurs
+
+Quatorze entrées. La colonne « détecté par » dit quel outil l'a vue. Les lignes
+marquées **aucun** sont celles qu'aucun outil ne signale, et ce sont les plus chères.
+
+| # | Ligne | Odeur ou défaut | Détecté par | Conséquence concrète |
+|---|---|---|---|---|
+| 1 | 4 | commentaire « NE PAS TOUCHER A mouv() SANS PREVENIR » | **aucun** | la peur est documentée au lieu d'être traitée, personne n'ose entrer dans la fonction |
+| 2 | 10 à 13 | constantes `TVA`, `S`, `R`, `Q` | **aucun** | `S` et `Q` ne se cherchent pas dans le projet, il faut lire le corps pour savoir ce qu'ils valent |
+| 3 | 14 à 16 | état global mutable `JOURNAL`, `STOCK`, `DERNIER` | vulture, partiellement | deux appels successifs ne donnent pas le même résultat, les tests devront s'exécuter dans un ordre précis |
+| 4 | 25 | branche morte `else: t = t + 0` | **aucun** | cache une décision métier jamais écrite nulle part sur les quantités négatives |
+| 5 | 30 | variable nommée `l` | ruff E741 en mode étendu | se confond avec le chiffre 1 à la lecture |
+| 6 | 37 | `mouv(a, q, t="out", j=[], force=False, log=True)` | pylint R0913, W0102 | six paramètres dont trois drapeaux, et un argument par défaut mutable partagé entre tous les appels |
+| 7 | 37 | l'argument `t` choisit entre entrée et sortie de stock | **aucun** | ce sont deux fonctions différentes déguisées en une seule, aucun appelant ne lit `mouv(a, 5)` correctement |
+| 8 | 44 | la fonction modifie son argument avant de valider | **aucun** | le sujet demande qu'un refus laisse le stock intact, la structure du code rend cette garantie impossible à tenir |
+| 9 | 74 à 84 | tri à bulles réimplémenté à la main | **aucun** | `sorted` existe, fait le même travail en une ligne et ne se trompe pas sur les indices |
+| 10 | 90 | `except:` nu | pylint W0702, ruff E722 | attrape aussi le Ctrl+C et les fautes de frappe, le bug devient invisible |
+| 11 | 91 | renvoie `0` pour dire « je ne sais pas calculer » | **aucun** | zéro jour de stock et absence de données deviennent indistinguables pour l'appelant |
+| 12 | 94 à 119 | quatre blocs identiques, catégories écrites en dur | pylint R0912 | ajouter une catégorie oblige à copier un cinquième bloc, et à ne pas en oublier un |
+| 13 | 122 | `rapport` calcule, affiche et écrit un fichier | pylint R0913, R0912, R1702 | trois acteurs différents peuvent demander de la modifier, et elle demande 22 tests |
+| 14 | 175 à 182 | `maj_prix` morte, avec son ancien corps en commentaire | vulture 60 %, W0613 | lue par chaque nouvel arrivant, maintenue par erreur, et prête à se réveiller |
+
+Sept de ces quatorze entrées ne sont vues par aucun outil.
+
+---
+
+## 3. Faut-il tout réécrire
+
+Non, et les chiffres le disent.
+
+Le problème n'est pas réparti sur les 159 lignes du module. Il est concentré :
+**une seule fonction sur dix** est au rang D, et deux autres au rang B. Les sept
+autres sont déjà au rang A. Réécrire l'ensemble reviendrait à jeter sept fonctions
+correctes, testées par sept ans de production, pour régler un problème qui tient
+dans trente lignes.
+
+C'est exactement ce qu'a fait Netscape en 1998. Le moteur de rendu était jugé
+irrécupérable, la réécriture a pris trois ans, et pendant ces trois ans Internet
+Explorer est passé de 20 % à plus de 80 % du marché. Ce qui manquait à Netscape,
+ce n'était pas du courage, c'était un moyen de vérifier qu'une modification ne
+cassait rien.
+
+C'est ce qui manque ici aussi : la couverture est de **0 %**. Tant qu'elle reste
+à zéro, toute intervention est un pari, y compris une réécriture.
+
+**Ordre d'intervention proposé.**
+
+D'abord écrire des tests sur `val`, `alerte`, `cout`, `classer` et `rot`. Ce sont
+les fonctions les plus simples, elles se testent en une heure, et elles portent
+les règles métier que la direction lit tous les 5 du mois.
+
+Ensuite seulement attaquer `rapport`, parce que c'est la seule fonction que
+personne ne peut modifier aujourd'hui sans risque, et qu'il faut un filet avant
+d'y entrer.
+
+Supprimer `maj_prix` et l'état global en dernier : c'est peu risqué, mais ça ne
+débloque rien tant que le reste n'est pas couvert.
+
+Budget estimé : une journée. À comparer aux trois semaines d'une réécriture qui
+recommencerait par redécouvrir les règles métier qui ne sont écrites nulle part
+ailleurs que dans ce fichier.

@@ -5,7 +5,7 @@ Quand le comportement observe contredit une regle metier, la regle concernee est
 citee dans le nom du test et l'ecart est reporte dans RAPPORT-QUALITE.md.
 """
 
-from inventaire import alerte, classer, cout, par_cat, rot, val
+from inventaire import alerte, classer, cout, mouv, par_cat, rot, val
 
 
 def article(**surcharges):
@@ -126,3 +126,47 @@ def test_par_cat_ventile_la_valeur_par_categorie():
 
 def test_par_cat_range_une_categorie_inconnue_dans_autre():
     assert par_cat([article(cat="drone", q=1, pu=3.0)]) == {"autre": 3.0}
+
+
+# --- mouv -----------------------------------------------------------------
+
+
+def test_mouv_retire_la_quantite_demandee():
+    a = article(q=50)
+    assert mouv(a, 10) is True
+    assert a["q"] == 40
+
+
+def test_mouv_ajoute_la_quantite_demandee():
+    a = article(q=50)
+    assert mouv(a, 10, t="in") is True
+    assert a["q"] == 60
+
+
+def test_mouv_refuse_un_retrait_superieur_au_stock():
+    assert mouv(article(q=50), 51) is False
+
+
+def test_mouv_laisse_le_stock_negatif_apres_un_refus_alors_que_la_regle_m3_l_interdit():
+    a = article(q=50)
+    mouv(a, 51)
+    assert a["q"] == -1
+
+
+def test_mouv_refuse_une_quantite_nulle_ou_negative():
+    a = article(q=50)
+    assert mouv(a, 0) is False
+    assert mouv(a, -3) is False
+    assert a["q"] == 50
+
+
+def test_mouv_refuse_un_type_de_mouvement_inconnu():
+    a = article(q=50)
+    assert mouv(a, 5, t="transfert") is False
+
+
+def test_mouv_alimente_le_journal_fourni():
+    journal = []
+    mouv(article(q=50), 5, j=journal)
+    assert journal[0]["ref"] == "VIS-M6"
+    assert journal[0]["q"] == 5

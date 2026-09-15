@@ -47,9 +47,9 @@ def enregistrer_mouvement(article, quantite, sens, journal):
 def retirer_du_stock(article, quantite, journal=None, force=False):
     if quantite <= 0:
         return False
-    article["q"] = article["q"] - quantite
-    if article["q"] < 0 and not force:
+    if quantite > article["q"] and not force:
         return False
+    article["q"] = article["q"] - quantite
     enregistrer_mouvement(article, quantite, "out", journal)
     return True
 

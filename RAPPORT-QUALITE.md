@@ -216,3 +216,41 @@ débloque rien tant que le reste n'est pas couvert.
 Budget estimé : une journée. À comparer aux trois semaines d'une réécriture qui
 recommencerait par redécouvrir les règles métier qui ne sont écrites nulle part
 ailleurs que dans ce fichier.
+
+---
+
+## 4. Écarts constatés entre le code et les règles métier
+
+Relevés pendant la mission 3, en écrivant le filet. **Aucun n'est corrigé ici.**
+Chacun est figé par un test dont le nom cite la règle violée, et sera traité en
+mission 5 par un test rouge puis une correction.
+
+| Règle | Ligne | Ce que le code fait | Ce que la règle dit |
+|---|---|---|---|
+| M2 | 32 | `a["q"] < a["seuil"]`, un article pile au seuil n'est pas signalé | au seuil, l'article est en alerte |
+| M2 | 63 | `cout` utilise la même comparaison, donc ne commande rien pour un article au seuil | un article au seuil doit être réapprovisionné |
+| M2 | 141 | le rapport mensuel reproduit le même écart dans sa liste d'alertes | idem |
+| M3 | 44 | le stock est décrémenté **avant** la vérification, et reste négatif après un refus | un retrait refusé laisse le stock inchangé |
+| M5 | 65 | `n > Q`, la remise commence à 101 unités | remise à partir de 100 unités incluses |
+| M7 | 90 | un `except` nu renvoie `0` quand il n'y a aucune vente | une erreur explicite doit être levée |
+
+### Ce que le filet ne protège pas
+
+Trois comportements actuels ne sont **pas** couverts par le filet, et c'est un choix
+assumé plutôt qu'un oubli.
+
+**Les `print`.** Le module affiche des lignes de diagnostic pendant le calcul. La
+mission 3 impose de les sortir du code de calcul. Aucun test ne les fige, sinon le
+refactoring imposé deviendrait impossible. Les chaînes sont reprises telles quelles
+dans les fonctions extraites, et couvertes par un test à ce moment-là.
+
+**L'argument par défaut mutable de `mouv` et de `export_json`.** C'est un défaut
+technique, pas un écart métier : aucune règle de M1 à M8 ne décrit ce que doit
+contenir un journal par défaut. On le supprime en mission 3 sans passer par la
+case mission 5.
+
+**L'attrape-tout de `rot`.** Il absorbait aussi des erreurs que personne n'a jamais
+rencontrées, une clé absente par exemple. Le filet ne documente que le cas d'une
+période sans vente. Le refactoring ne conserve donc que celui-là, et c'est
+exactement la limite d'un filet de caractérisation : il protège ce qu'il couvre,
+rien de plus.

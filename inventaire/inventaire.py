@@ -29,23 +29,30 @@ def references_en_alerte(articles):
     return [a["ref"] for a in articles if a["q"] < a["seuil"]]
 
 
-def mouv(a, q, t="out", j=None, force=False):
+def enregistrer_mouvement(article, quantite, sens, journal):
     global DERNIER
-    if q <= 0:
-        return False
-    if t == "out":
-        a["q"] = a["q"] - q
-        if a["q"] < 0 and not force:
-            return False
-    elif t == "in":
-        a["q"] = a["q"] + q
-    else:
-        return False
     DERNIER = DERNIER + 1
-    ecriture = {"id": DERNIER, "ref": a["ref"], "q": q, "t": t}
-    if j is not None:
-        j.append(ecriture)
+    ecriture = {"id": DERNIER, "ref": article["ref"], "q": quantite, "t": sens}
+    if journal is not None:
+        journal.append(ecriture)
     JOURNAL.append(dict(ecriture))
+
+
+def retirer_du_stock(article, quantite, journal=None, force=False):
+    if quantite <= 0:
+        return False
+    article["q"] = article["q"] - quantite
+    if article["q"] < 0 and not force:
+        return False
+    enregistrer_mouvement(article, quantite, "out", journal)
+    return True
+
+
+def ajouter_au_stock(article, quantite, journal=None):
+    if quantite <= 0:
+        return False
+    article["q"] = article["q"] + quantite
+    enregistrer_mouvement(article, quantite, "in", journal)
     return True
 
 

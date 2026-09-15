@@ -6,14 +6,15 @@ citee dans le nom du test et l'ecart est reporte dans RAPPORT-QUALITE.md.
 """
 
 from inventaire import (
+    ajouter_au_stock,
     classer_par_valeur,
     cout_de_reapprovisionnement,
     exporter_historique,
     generer_rapport,
     message_de_rotation,
     messages_de_diagnostic,
-    mouv,
     references_en_alerte,
+    retirer_du_stock,
     rotation_en_jours,
     valeur_du_stock,
     valeur_par_categorie,
@@ -143,43 +144,38 @@ def test_par_cat_range_une_categorie_inconnue_dans_autre():
 # --- mouv -----------------------------------------------------------------
 
 
-def test_mouv_retire_la_quantite_demandee():
+def test_un_retrait_diminue_le_stock():
     a = article(q=50)
-    assert mouv(a, 10) is True
+    assert retirer_du_stock(a, 10) is True
     assert a["q"] == 40
 
 
-def test_mouv_ajoute_la_quantite_demandee():
+def test_un_ajout_augmente_le_stock():
     a = article(q=50)
-    assert mouv(a, 10, t="in") is True
+    assert ajouter_au_stock(a, 10) is True
     assert a["q"] == 60
 
 
-def test_mouv_refuse_un_retrait_superieur_au_stock():
-    assert mouv(article(q=50), 51) is False
+def test_un_retrait_superieur_au_stock_est_refuse():
+    assert retirer_du_stock(article(q=50), 51) is False
 
 
-def test_mouv_laisse_le_stock_negatif_apres_un_refus_alors_que_la_regle_m3_l_interdit():
+def test_un_refus_laisse_le_stock_negatif_alors_que_la_regle_m3_l_interdit():
     a = article(q=50)
-    mouv(a, 51)
+    retirer_du_stock(a, 51)
     assert a["q"] == -1
 
 
-def test_mouv_refuse_une_quantite_nulle_ou_negative():
+def test_une_quantite_nulle_ou_negative_est_refusee():
     a = article(q=50)
-    assert mouv(a, 0) is False
-    assert mouv(a, -3) is False
+    assert retirer_du_stock(a, 0) is False
+    assert retirer_du_stock(a, -3) is False
     assert a["q"] == 50
 
 
-def test_mouv_refuse_un_type_de_mouvement_inconnu():
-    a = article(q=50)
-    assert mouv(a, 5, t="transfert") is False
-
-
-def test_mouv_alimente_le_journal_fourni():
+def test_le_journal_fourni_est_alimente():
     journal = []
-    mouv(article(q=50), 5, j=journal)
+    retirer_du_stock(article(q=50), 5, journal=journal)
     assert journal[0]["ref"] == "VIS-M6"
     assert journal[0]["q"] == 5
 

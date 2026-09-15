@@ -5,7 +5,7 @@ Quand le comportement observe contredit une regle metier, la regle concernee est
 citee dans le nom du test et l'ecart est reporte dans RAPPORT-QUALITE.md.
 """
 
-from inventaire import alerte, val
+from inventaire import alerte, cout, val
 
 
 def article(**surcharges):
@@ -55,3 +55,26 @@ def test_alerte_ignore_un_article_au_dessus_du_seuil():
 def test_alerte_ne_renvoie_que_les_references_concernees():
     articles = [article(ref="BAS", q=1, seuil=10), article(ref="HAUT", q=99, seuil=10)]
     assert alerte(articles) == ["BAS"]
+
+
+# --- cout -----------------------------------------------------------------
+
+
+def test_cout_est_nul_hors_alerte():
+    assert cout(article(q=50, seuil=10)) == 0
+
+
+def test_cout_remonte_a_trois_fois_le_seuil():
+    assert cout(article(q=4, seuil=10, pu=2.0)) == 52.0
+
+
+def test_cout_n_applique_pas_la_remise_a_cent_unites_alors_que_la_regle_m5_l_exige():
+    assert cout(article(q=20, seuil=40, pu=1.0)) == 100.0
+
+
+def test_cout_applique_la_remise_a_cent_une_unites():
+    assert cout(article(q=19, seuil=40, pu=1.0)) == 90.9
+
+
+def test_cout_est_nul_pour_un_article_pile_au_seuil():
+    assert cout(article(q=10, seuil=10, pu=1.0)) == 0

@@ -119,10 +119,12 @@ def messages_de_diagnostic(arts, ventes=None, cat=None, seuil_min=None):
     return messages
 
 
-def rapport(arts, ventes=None, cat=None, seuil_min=None, verbose=True, d=None):
-    if verbose:
-        for message in messages_de_diagnostic(arts, ventes, cat, seuil_min):
-            print(message)
+def afficher_diagnostic(arts, ventes=None, cat=None, seuil_min=None):
+    for message in messages_de_diagnostic(arts, ventes, cat, seuil_min):
+        print(message)
+
+
+def rapport(arts, cat=None, seuil_min=None, d=None):
     if d is None:
         d = datetime.datetime.now()
     res = {}

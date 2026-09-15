@@ -119,7 +119,7 @@ def messages_de_diagnostic(arts, ventes=None, cat=None, seuil_min=None):
     return messages
 
 
-def rapport(arts, ventes=None, cat=None, seuil_min=None, export=False, verbose=True, d=None):
+def rapport(arts, ventes=None, cat=None, seuil_min=None, verbose=True, d=None):
     if verbose:
         for message in messages_de_diagnostic(arts, ventes, cat, seuil_min):
             print(message)
@@ -140,9 +140,6 @@ def rapport(arts, ventes=None, cat=None, seuil_min=None, export=False, verbose=T
     res["nb"] = nb
     res["alertes"] = liste_alerte
     res["ttc"] = round(tot * (1 + TAUX_TVA), 2)
-    if export:
-        with open("/tmp/rapport.json", "w", encoding="utf-8") as fichier:
-            fichier.write(json.dumps(res))
     return res
 
 

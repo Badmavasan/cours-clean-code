@@ -71,10 +71,9 @@ def classer(arts):
 
 
 def rot(a, v):
-    try:
-        return math.floor(a["q"] / (v / JOURS_DE_LA_PERIODE_DE_VENTE))
-    except:
+    if v == 0:
         return 0
+    return math.floor(a["q"] / (v / JOURS_DE_LA_PERIODE_DE_VENTE))
 
 
 def par_cat(arts):

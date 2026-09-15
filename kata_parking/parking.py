@@ -7,6 +7,8 @@ TARIF_PAR_TRANCHE = 1.50
 PLAFOND_PAR_JOURNEE = 18.00
 MINUTES_PAR_JOURNEE = 24 * 60
 PART_PAYEE_PAR_UN_ABONNE = 0.60
+DUREE_MAXIMALE_AVANT_FOURRIERE = 72 * 60
+FORFAIT_DE_FOURRIERE = 250.00
 
 
 class DureeInvalide(ValueError):
@@ -34,8 +36,8 @@ def _plafond(duree_en_minutes):
 def tarif(duree_en_minutes, est_abonne=False, est_electrique=False):
     if duree_en_minutes < 0:
         raise DureeInvalide(f"duree negative : {duree_en_minutes} minutes")
-    if duree_en_minutes > 72 * 60:
-        return 250.00
+    if duree_en_minutes > DUREE_MAXIMALE_AVANT_FOURRIERE:
+        return FORFAIT_DE_FOURRIERE
     montant = min(
         _montant_des_tranches(duree_en_minutes, est_electrique),
         _plafond(duree_en_minutes),

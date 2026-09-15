@@ -5,7 +5,7 @@ Quand le comportement observe contredit une regle metier, la regle concernee est
 citee dans le nom du test et l'ecart est reporte dans RAPPORT-QUALITE.md.
 """
 
-from inventaire import val
+from inventaire import alerte, val
 
 
 def article(**surcharges):
@@ -35,3 +35,23 @@ def test_val_ignore_une_quantite_nulle():
 
 def test_val_ignore_une_quantite_negative_au_lieu_de_la_soustraire():
     assert val([article(q=-5, pu=2.0)]) == 0
+
+
+# --- alerte ---------------------------------------------------------------
+
+
+def test_alerte_signale_un_article_sous_son_seuil():
+    assert alerte([article(q=5, seuil=10)]) == ["VIS-M6"]
+
+
+def test_alerte_ignore_un_article_pile_au_seuil_alors_que_la_regle_m2_l_exige():
+    assert alerte([article(q=10, seuil=10)]) == []
+
+
+def test_alerte_ignore_un_article_au_dessus_du_seuil():
+    assert alerte([article(q=11, seuil=10)]) == []
+
+
+def test_alerte_ne_renvoie_que_les_references_concernees():
+    articles = [article(ref="BAS", q=1, seuil=10), article(ref="HAUT", q=99, seuil=10)]
+    assert alerte(articles) == ["BAS"]

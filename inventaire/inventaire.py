@@ -101,21 +101,37 @@ def articles_retenus(arts, cat=None, seuil_min=None):
         yield a
 
 
+def message_d_exclusion(a):
+    if a["q"] <= 0:
+        return "stock vide " + a["ref"]
+    if a["pu"] <= 0:
+        return "prix invalide " + a["ref"]
+    return None
+
+
+def message_de_rotation_si_connue(a, ventes):
+    if ventes is None or a["ref"] not in ventes:
+        return None
+    return message_de_rotation(a, ventes[a["ref"]])
+
+
+def messages_pour_un_article(a, ventes=None):
+    exclusion = message_d_exclusion(a)
+    if exclusion is not None:
+        return [exclusion]
+    messages = []
+    if a["q"] < a["seuil"]:
+        messages.append("ALERTE " + a["ref"] + " : " + str(a["q"]) + " restants")
+    rotation = message_de_rotation_si_connue(a, ventes)
+    if rotation is not None:
+        messages.append(rotation)
+    return messages
+
+
 def messages_de_diagnostic(arts, ventes=None, cat=None, seuil_min=None):
     messages = []
     for a in articles_retenus(arts, cat, seuil_min):
-        if a["q"] <= 0:
-            messages.append("stock vide " + a["ref"])
-            continue
-        if a["pu"] <= 0:
-            messages.append("prix invalide " + a["ref"])
-            continue
-        if a["q"] < a["seuil"]:
-            messages.append("ALERTE " + a["ref"] + " : " + str(a["q"]) + " restants")
-        if ventes is not None and a["ref"] in ventes:
-            message = message_de_rotation(a, ventes[a["ref"]])
-            if message is not None:
-                messages.append(message)
+        messages.extend(messages_pour_un_article(a, ventes))
     return messages
 
 

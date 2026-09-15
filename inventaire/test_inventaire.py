@@ -160,10 +160,10 @@ def test_un_retrait_superieur_au_stock_est_refuse():
     assert retirer_du_stock(article(q=50), 51) is False
 
 
-def test_un_refus_laisse_le_stock_negatif_alors_que_la_regle_m3_l_interdit():
+def test_un_refus_laisse_le_stock_intact():
     a = article(q=50)
     retirer_du_stock(a, 51)
-    assert a["q"] == -1
+    assert a["q"] == 50
 
 
 def test_une_quantite_nulle_ou_negative_est_refusee():

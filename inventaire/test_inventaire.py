@@ -81,8 +81,8 @@ def test_cout_remonte_a_trois_fois_le_seuil():
     assert cout_de_reapprovisionnement(article(q=4, seuil=10, pu=2.0)) == 52.0
 
 
-def test_cout_n_applique_pas_la_remise_a_cent_unites_alors_que_la_regle_m5_l_exige():
-    assert cout_de_reapprovisionnement(article(q=20, seuil=40, pu=1.0)) == 100.0
+def test_cout_applique_la_remise_a_cent_unites():
+    assert cout_de_reapprovisionnement(article(q=20, seuil=40, pu=1.0)) == 90.0
 
 
 def test_cout_applique_la_remise_a_cent_une_unites():

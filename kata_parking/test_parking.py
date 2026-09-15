@@ -63,3 +63,7 @@ def test_l_avantage_electrique_se_cumule_avec_l_abonnement():
 def test_une_duree_negative_est_refusee():
     with pytest.raises(DureeInvalide, match="negative"):
         tarif(-1)
+
+
+def test_une_minute_de_plus_que_soixante_douze_heures_declenche_la_fourriere():
+    assert tarif(72 * 60 + 1) == 250.00

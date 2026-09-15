@@ -5,7 +5,7 @@ Quand le comportement observe contredit une regle metier, la regle concernee est
 citee dans le nom du test et l'ecart est reporte dans RAPPORT-QUALITE.md.
 """
 
-from inventaire import alerte, cout, val
+from inventaire import alerte, classer, cout, val
 
 
 def article(**surcharges):
@@ -78,3 +78,20 @@ def test_cout_applique_la_remise_a_cent_une_unites():
 
 def test_cout_est_nul_pour_un_article_pile_au_seuil():
     assert cout(article(q=10, seuil=10, pu=1.0)) == 0
+
+
+# --- classer --------------------------------------------------------------
+
+
+def test_classer_ordonne_de_la_plus_grosse_valeur_a_la_plus_petite():
+    petit = article(ref="PETIT", q=1, pu=1.0)
+    gros = article(ref="GROS", q=10, pu=100.0)
+    moyen = article(ref="MOYEN", q=5, pu=10.0)
+    classes = [a["ref"] for a in classer([petit, gros, moyen])]
+    assert classes == ["GROS", "MOYEN", "PETIT"]
+
+
+def test_classer_ne_reordonne_pas_la_liste_recue():
+    origine = [article(ref="A", q=1), article(ref="B", q=9)]
+    classer(origine)
+    assert [a["ref"] for a in origine] == ["A", "B"]

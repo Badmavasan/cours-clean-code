@@ -46,3 +46,7 @@ def test_un_abonne_paie_soixante_pour_cent_du_montant():
 
 def test_la_remise_abonne_s_applique_aussi_sur_le_plafond():
     assert tarif(8 * 60, est_abonne=True) == 10.80
+
+
+def test_un_vehicule_electrique_est_gratuit_jusqu_a_une_heure():
+    assert tarif(60, est_electrique=True) == 0.00

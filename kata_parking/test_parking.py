@@ -13,3 +13,7 @@ def test_toute_duree_jusqu_a_trente_minutes_est_gratuite(minutes):
 
 def test_la_trente_et_unieme_minute_coute_un_euro_cinquante():
     assert tarif(31) == 1.50
+
+
+def test_la_soixante_et_unieme_minute_coute_trois_euros():
+    assert tarif(61) == 3.00

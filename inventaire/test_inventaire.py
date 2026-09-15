@@ -5,7 +5,7 @@ Quand le comportement observe contredit une regle metier, la regle concernee est
 citee dans le nom du test et l'ecart est reporte dans RAPPORT-QUALITE.md.
 """
 
-from inventaire import alerte, classer, cout, mouv, par_cat, rot, val
+from inventaire import alerte, classer, cout, export_json, mouv, par_cat, rapport, rot, val
 
 
 def article(**surcharges):
@@ -170,3 +170,62 @@ def test_mouv_alimente_le_journal_fourni():
     mouv(article(q=50), 5, j=journal)
     assert journal[0]["ref"] == "VIS-M6"
     assert journal[0]["q"] == 5
+
+
+# --- rapport --------------------------------------------------------------
+
+
+def test_rapport_utilise_la_date_fournie():
+    assert rapport([article()], d="2019-03-05")["date"] == "2019-03-05"
+
+
+def test_rapport_compte_et_valorise_les_articles_retenus():
+    res = rapport([article(q=10, pu=10.0)], d="x")
+    assert res["nb"] == 1
+    assert res["valeur"] == 100.0
+
+
+def test_rapport_ajoute_la_tva_de_vingt_pour_cent():
+    assert rapport([article(q=10, pu=10.0)], d="x")["ttc"] == 120.0
+
+
+def test_rapport_ecarte_un_article_sans_stock():
+    res = rapport([article(q=0)], d="x")
+    assert res["nb"] == 0
+    assert res["valeur"] == 0
+
+
+def test_rapport_ecarte_un_article_sans_prix():
+    res = rapport([article(pu=0)], d="x")
+    assert res["nb"] == 0
+
+
+def test_rapport_filtre_sur_la_categorie_demandee():
+    articles = [article(ref="A", cat="outil"), article(ref="B", cat="piece")]
+    assert rapport(articles, cat="outil", d="x")["nb"] == 1
+
+
+def test_rapport_filtre_sur_une_quantite_minimale():
+    articles = [article(ref="A", q=5), article(ref="B", q=500)]
+    assert rapport(articles, seuil_min=100, d="x")["nb"] == 1
+
+
+def test_rapport_omet_un_article_pile_au_seuil_de_ses_alertes():
+    res = rapport([article(q=10, seuil=10)], d="x")
+    assert res["alertes"] == []
+
+
+def test_rapport_ne_modifie_aucun_article():
+    a = article(q=50)
+    rapport([a], d="x")
+    assert a["q"] == 50
+
+
+# --- export_json ----------------------------------------------------------
+
+
+def test_export_json_ecrit_le_rapport_et_renvoie_l_historique(tmp_path):
+    chemin = tmp_path / "inv.json"
+    historique = export_json({"valeur": 12.5}, chemin=str(chemin), hist=[])
+    assert historique == [{"valeur": 12.5}]
+    assert chemin.read_text(encoding="utf-8") == '[{"valeur": 12.5}]'

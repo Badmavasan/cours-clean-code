@@ -4,10 +4,13 @@ import datetime
 import json
 import math
 
-TVA = 0.2
-S = 3
-R = 0.1
-Q = 100
+TAUX_TVA = 0.2
+MULTIPLICATEUR_DE_REAPPROVISIONNEMENT = 3
+TAUX_DE_REMISE_GROS_VOLUME = 0.1
+QUANTITE_MINIMALE_POUR_REMISE = 100
+JOURS_DE_LA_PERIODE_DE_VENTE = 30
+SEUIL_RUPTURE_IMMINENTE_EN_JOURS = 7
+SEUIL_SURVEILLANCE_EN_JOURS = 30
 JOURNAL = []
 DERNIER = 0
 
@@ -57,9 +60,9 @@ def mouv(a, q, t="out", j=[], force=False, log=True):
 
 def cout(a):
     if a["q"] < a["seuil"]:
-        n = a["seuil"] * S - a["q"]
-        if n > Q:
-            c = n * a["pu"] - n * a["pu"] * R
+        n = a["seuil"] * MULTIPLICATEUR_DE_REAPPROVISIONNEMENT - a["q"]
+        if n > QUANTITE_MINIMALE_POUR_REMISE:
+            c = n * a["pu"] - n * a["pu"] * TAUX_DE_REMISE_GROS_VOLUME
         else:
             c = n * a["pu"]
         return round(c, 2)
@@ -82,7 +85,7 @@ def classer(arts):
 
 def rot(a, v):
     try:
-        return math.floor(a["q"] / (v / 30))
+        return math.floor(a["q"] / (v / JOURS_DE_LA_PERIODE_DE_VENTE))
     except:
         return 0
 
@@ -141,11 +144,11 @@ def rapport(arts, ventes=None, cat=None, seuil_min=None, export=False, verbose=T
                 if ventes is not None:
                     if a["ref"] in ventes:
                         if ventes[a["ref"]] > 0:
-                            j = math.floor(a["q"] / (ventes[a["ref"]] / 30))
-                            if j < 7:
+                            j = math.floor(a["q"] / (ventes[a["ref"]] / JOURS_DE_LA_PERIODE_DE_VENTE))
+                            if j < SEUIL_RUPTURE_IMMINENTE_EN_JOURS:
                                 if verbose:
                                     print("RUPTURE IMMINENTE " + a["ref"])
-                            elif j < 30:
+                            elif j < SEUIL_SURVEILLANCE_EN_JOURS:
                                 if verbose:
                                     print("a surveiller " + a["ref"])
                         else:
@@ -160,7 +163,7 @@ def rapport(arts, ventes=None, cat=None, seuil_min=None, export=False, verbose=T
     res["valeur"] = round(tot, 2)
     res["nb"] = nb
     res["alertes"] = liste_alerte
-    res["ttc"] = round(tot * (1 + TVA), 2)
+    res["ttc"] = round(tot * (1 + TAUX_TVA), 2)
     if export:
         f = open("/tmp/rapport.json", "w")
         f.write(json.dumps(res))

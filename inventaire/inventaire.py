@@ -25,7 +25,7 @@ def valeur_du_stock(articles):
 
 
 def est_en_alerte(article):
-    return article["q"] < article["seuil"]
+    return article["q"] <= article["seuil"]
 
 
 def references_en_alerte(articles):

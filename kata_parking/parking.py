@@ -48,5 +48,7 @@ def tarif(duree_en_minutes, est_abonne=False, est_electrique=False):
 
 
 def tarif_en_cours(entree, maintenant, est_abonne=False, est_electrique=False):
+    if maintenant < entree:
+        raise DureeInvalide("la sortie est anterieure a l'entree")
     minutes = int((maintenant - entree).total_seconds() // 60)
     return tarif(minutes, est_abonne, est_electrique)

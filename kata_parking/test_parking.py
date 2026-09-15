@@ -1,5 +1,7 @@
+from datetime import datetime
+
 import pytest
-from parking import DureeInvalide, tarif
+from parking import DureeInvalide, tarif, tarif_en_cours
 
 
 def test_un_stationnement_de_trente_minutes_est_gratuit():
@@ -75,3 +77,9 @@ def test_soixante_douze_heures_pile_restent_au_tarif_normal():
 
 def test_la_fourriere_ignore_l_abonnement_et_l_electrique():
     assert tarif(100 * 60, est_abonne=True, est_electrique=True) == 250.00
+
+
+def test_le_montant_du_a_l_instant_present_se_calcule_sur_une_heure_fournie():
+    entree = datetime(2026, 9, 15, 8, 0)
+    maintenant = datetime(2026, 9, 15, 10, 0)
+    assert tarif_en_cours(entree, maintenant) == 4.50

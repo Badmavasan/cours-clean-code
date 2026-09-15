@@ -26,3 +26,7 @@ def test_chaque_demi_heure_commencee_ajoute_un_euro_cinquante(minutes, attendu):
 
 def test_au_dela_de_six_heures_trente_le_montant_est_plafonne():
     assert tarif(8 * 60) == 18.00
+
+
+def test_le_plafond_est_atteint_a_exactement_six_heures_trente():
+    assert tarif(390) == 18.00

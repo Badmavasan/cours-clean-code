@@ -54,16 +54,18 @@ def mouv(a, q, t="out", j=[], force=False, log=True):
     return True
 
 
+def quantite_a_commander(a):
+    return a["seuil"] * MULTIPLICATEUR_DE_REAPPROVISIONNEMENT - a["q"]
+
+
 def cout(a):
-    if a["q"] < a["seuil"]:
-        n = a["seuil"] * MULTIPLICATEUR_DE_REAPPROVISIONNEMENT - a["q"]
-        if n > QUANTITE_MINIMALE_POUR_REMISE:
-            c = n * a["pu"] - n * a["pu"] * TAUX_DE_REMISE_GROS_VOLUME
-        else:
-            c = n * a["pu"]
-        return round(c, 2)
-    else:
+    if a["q"] >= a["seuil"]:
         return 0
+    quantite = quantite_a_commander(a)
+    montant = quantite * a["pu"]
+    if quantite > QUANTITE_MINIMALE_POUR_REMISE:
+        montant -= montant * TAUX_DE_REMISE_GROS_VOLUME
+    return round(montant, 2)
 
 
 def classer(arts):

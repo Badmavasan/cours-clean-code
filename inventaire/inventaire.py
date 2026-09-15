@@ -24,11 +24,7 @@ def val(arts):
 
 
 def alerte(arts):
-    l = []
-    for a in arts:
-        if a["q"] < a["seuil"]:
-            l.append(a["ref"])
-    return l
+    return [a["ref"] for a in arts if a["q"] < a["seuil"]]
 
 
 def mouv(a, q, t="out", j=[], force=False, log=True):

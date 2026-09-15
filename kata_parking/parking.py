@@ -34,6 +34,8 @@ def _plafond(duree_en_minutes):
 def tarif(duree_en_minutes, est_abonne=False, est_electrique=False):
     if duree_en_minutes < 0:
         raise DureeInvalide(f"duree negative : {duree_en_minutes} minutes")
+    if duree_en_minutes > 72 * 60:
+        return 250.00
     montant = min(
         _montant_des_tranches(duree_en_minutes, est_electrique),
         _plafond(duree_en_minutes),

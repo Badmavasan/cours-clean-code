@@ -71,7 +71,7 @@ def cout_de_reapprovisionnement(article):
         return 0
     quantite = quantite_a_commander(article)
     montant = quantite * article["pu"]
-    if quantite > QUANTITE_MINIMALE_POUR_REMISE:
+    if quantite >= QUANTITE_MINIMALE_POUR_REMISE:
         montant -= montant * TAUX_DE_REMISE_GROS_VOLUME
     return round(montant, 2)
 

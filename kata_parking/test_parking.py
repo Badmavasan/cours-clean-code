@@ -42,3 +42,7 @@ def test_une_journee_commencee_compte_pour_une_journee_entiere():
 
 def test_un_abonne_paie_soixante_pour_cent_du_montant():
     assert tarif(31, est_abonne=True) == 0.90
+
+
+def test_la_remise_abonne_s_applique_aussi_sur_le_plafond():
+    assert tarif(8 * 60, est_abonne=True) == 10.80

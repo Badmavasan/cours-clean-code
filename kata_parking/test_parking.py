@@ -17,3 +17,8 @@ def test_la_trente_et_unieme_minute_coute_un_euro_cinquante():
 
 def test_la_soixante_et_unieme_minute_coute_trois_euros():
     assert tarif(61) == 3.00
+
+
+@pytest.mark.parametrize("minutes, attendu", [(60, 1.50), (90, 3.00), (120, 4.50)])
+def test_chaque_demi_heure_commencee_ajoute_un_euro_cinquante(minutes, attendu):
+    assert tarif(minutes) == attendu

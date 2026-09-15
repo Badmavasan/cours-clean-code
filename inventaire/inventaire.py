@@ -11,6 +11,8 @@ QUANTITE_MINIMALE_POUR_REMISE = 100
 JOURS_DE_LA_PERIODE_DE_VENTE = 30
 SEUIL_RUPTURE_IMMINENTE_EN_JOURS = 7
 SEUIL_SURVEILLANCE_EN_JOURS = 30
+CATEGORIES_CONNUES = ("outil", "consommable", "piece")
+CATEGORIE_PAR_DEFAUT = "autre"
 JOURNAL = []
 DERNIER = 0
 
@@ -76,31 +78,11 @@ def rot(a, v):
 
 
 def par_cat(arts):
-    d = {}
+    totaux = {}
     for a in arts:
-        if a["cat"] == "outil":
-            if "outil" in d:
-                d["outil"] = d["outil"] + a["q"] * a["pu"]
-            else:
-                d["outil"] = a["q"] * a["pu"]
-        elif a["cat"] == "consommable":
-            if "consommable" in d:
-                d["consommable"] = d["consommable"] + a["q"] * a["pu"]
-            else:
-                d["consommable"] = a["q"] * a["pu"]
-        elif a["cat"] == "piece":
-            if "piece" in d:
-                d["piece"] = d["piece"] + a["q"] * a["pu"]
-            else:
-                d["piece"] = a["q"] * a["pu"]
-        else:
-            if "autre" in d:
-                d["autre"] = d["autre"] + a["q"] * a["pu"]
-            else:
-                d["autre"] = a["q"] * a["pu"]
-    for k in d:
-        d[k] = round(d[k], 2)
-    return d
+        categorie = a["cat"] if a["cat"] in CATEGORIES_CONNUES else CATEGORIE_PAR_DEFAUT
+        totaux[categorie] = totaux.get(categorie, 0) + valeur_brute(a)
+    return {categorie: round(valeur, 2) for categorie, valeur in totaux.items()}
 
 
 def rapport(arts, ventes=None, cat=None, seuil_min=None, export=False, verbose=True, d=None):

@@ -5,7 +5,15 @@ Le filet de inventaire/test_inventaire.py decrit ce que le code fait ;
 ce fichier decrit ce que le code doit faire.
 """
 
-from inventaire import cout_de_reapprovisionnement, references_en_alerte, retirer_du_stock
+import pytest
+
+from inventaire import (
+    AucuneVenteSurLaPeriode,
+    cout_de_reapprovisionnement,
+    references_en_alerte,
+    retirer_du_stock,
+    rotation_en_jours,
+)
 
 
 def article(**surcharges):
@@ -27,3 +35,8 @@ def test_m3_un_retrait_refuse_laisse_le_stock_inchange():
     stock = article(q=50)
     assert retirer_du_stock(stock, 51) is False
     assert stock["q"] == 50
+
+
+def test_m7_une_periode_sans_vente_leve_une_erreur_explicite():
+    with pytest.raises(AucuneVenteSurLaPeriode, match="aucune vente"):
+        rotation_en_jours(article(q=50), 0)

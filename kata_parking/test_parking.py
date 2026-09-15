@@ -89,3 +89,9 @@ def test_une_sortie_anterieure_a_l_entree_est_refusee():
     entree = datetime(2026, 9, 15, 10, 0)
     with pytest.raises(DureeInvalide, match="anterieure"):
         tarif_en_cours(entree, datetime(2026, 9, 15, 9, 0))
+
+
+def test_le_montant_en_cours_ne_depend_pas_de_la_date_reelle():
+    en_2026 = tarif_en_cours(datetime(2026, 1, 1, 0, 0), datetime(2026, 1, 1, 2, 0))
+    en_2036 = tarif_en_cours(datetime(2036, 6, 30, 0, 0), datetime(2036, 6, 30, 2, 0))
+    assert en_2026 == en_2036 == 4.50

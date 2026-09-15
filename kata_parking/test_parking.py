@@ -83,3 +83,9 @@ def test_le_montant_du_a_l_instant_present_se_calcule_sur_une_heure_fournie():
     entree = datetime(2026, 9, 15, 8, 0)
     maintenant = datetime(2026, 9, 15, 10, 0)
     assert tarif_en_cours(entree, maintenant) == 4.50
+
+
+def test_une_sortie_anterieure_a_l_entree_est_refusee():
+    entree = datetime(2026, 9, 15, 10, 0)
+    with pytest.raises(DureeInvalide, match="anterieure"):
+        tarif_en_cours(entree, datetime(2026, 9, 15, 9, 0))

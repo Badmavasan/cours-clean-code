@@ -15,14 +15,12 @@ JOURNAL = []
 DERNIER = 0
 
 
+def valeur_brute(a):
+    return a["q"] * a["pu"]
+
+
 def val(arts):
-    t = 0
-    for a in arts:
-        if a["q"] > 0:
-            t = t + a["q"] * a["pu"]
-        else:
-            t = t + 0
-    return round(t, 2)
+    return round(sum(valeur_brute(a) for a in arts if a["q"] > 0), 2)
 
 
 def alerte(arts):

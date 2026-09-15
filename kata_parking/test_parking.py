@@ -34,3 +34,7 @@ def test_le_plafond_est_atteint_a_exactement_six_heures_trente():
 
 def test_la_vingt_cinquieme_heure_ouvre_une_deuxieme_journee():
     assert tarif(25 * 60) == 36.00
+
+
+def test_une_journee_commencee_compte_pour_une_journee_entiere():
+    assert tarif(24 * 60 + 1) == 36.00

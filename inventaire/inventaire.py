@@ -1,18 +1,14 @@
-# -*- coding: utf-8 -*-
-# gestion de stock entrepot nord - v4
-# repris de la v3 de Kevin, TODO refactorer un jour
-# NE PAS TOUCHER A mouv() SANS PREVENIR L'EQUIPE LOGISTIQUE
+"""Gestion du stock de l entrepot nord."""
+
 import datetime
 import json
 import math
-import random
 
 TVA = 0.2
 S = 3
 R = 0.1
 Q = 100
 JOURNAL = []
-STOCK = {}
 DERNIER = 0
 
 
@@ -166,20 +162,10 @@ def rapport(arts, ventes=None, cat=None, seuil_min=None, export=False, verbose=T
     res["alertes"] = liste_alerte
     res["ttc"] = round(tot * (1 + TVA), 2)
     if export:
-        f = open("/tmp/rapport_" + str(random.randint(1, 9999)) + ".json", "w")
+        f = open("/tmp/rapport.json", "w")
         f.write(json.dumps(res))
         f.close()
     return res
-
-
-def maj_prix(ref, p):
-    # ancienne version, remplacee par l'ERP en 2021
-    # for a in STOCK:
-    #     if a == ref:
-    #         STOCK[a]["pu"] = p
-    #         JOURNAL.append({"ref": ref, "p": p})
-    # return True
-    return None
 
 
 def export_json(res, chemin="/tmp/inv.json", hist=[]):

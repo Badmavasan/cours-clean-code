@@ -30,3 +30,7 @@ def test_au_dela_de_six_heures_trente_le_montant_est_plafonne():
 
 def test_le_plafond_est_atteint_a_exactement_six_heures_trente():
     assert tarif(390) == 18.00
+
+
+def test_la_vingt_cinquieme_heure_ouvre_une_deuxieme_journee():
+    assert tarif(25 * 60) == 36.00

@@ -38,3 +38,7 @@ def test_la_vingt_cinquieme_heure_ouvre_une_deuxieme_journee():
 
 def test_une_journee_commencee_compte_pour_une_journee_entiere():
     assert tarif(24 * 60 + 1) == 36.00
+
+
+def test_un_abonne_paie_soixante_pour_cent_du_montant():
+    assert tarif(31, est_abonne=True) == 0.90

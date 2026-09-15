@@ -320,3 +320,45 @@ Ce que ce delta prouve : la fonction que personne n'osait modifier est passée
 du rang D au rang A, le module est couvert par des tests qui décrivent son
 comportement réel, et les six écarts relevés sont documentés et toujours
 présents, prêts à être corrigés en mission 5.
+
+---
+
+## 6. Bilan des corrections
+
+Quatre écarts corrigés. Le sujet en demande deux au minimum.
+Chacun a été prouvé par un test rouge **avant** la moindre modification du code.
+
+| Règle violée | Ligne d'origine | Commit red | Commit fix | Conséquence métier |
+|---|---|---|---|---|
+| M2, seuil inclusif | 32, 63 et 141 | `950158f` | `0234ce6` | un article pile à son seuil n'était **jamais** signalé, ni dans les alertes ni dans le réapprovisionnement |
+| M5, remise à 100 unités | 65 | `f7dcbaf` | `ec88963` | une commande de exactement 100 unités était facturée **10 % trop cher** |
+| M3, retrait refusé | 44 | `4e2eb80` | `972cc5b` | après un refus, le stock restait négatif et faussait la valeur totale |
+| M7, période sans vente | 90 | `5d7ce91` | `2783a84` | `0` signifiait à la fois zéro jour de stock et donnée absente |
+
+### La conséquence chiffrée
+
+**M2.** Sur le jeu de données de l'entrepôt, GANT-L est à 5 unités pour un seuil de 5.
+Il était donc exactement dans l'angle mort. Il n'apparaissait dans aucune alerte et
+`cout_de_reapprovisionnement` renvoyait 0 pour lui, donc aucune commande n'était
+déclenchée. C'est la mécanique exacte des deux ruptures de stock du mois dernier.
+
+**M5.** HUILE-5 coûte 12,50 euros l'unité. Une commande de 100 unités revient à
+1250 euros sans remise, contre 1125 euros avec les 10 % dus, soit **125 euros perdus**
+à chaque commande de ce volume exact. Le bug ne se déclenche que sur la valeur pile,
+ce qui explique qu'il soit passé inaperçu pendant sept ans.
+
+### Le geste qui compte
+
+Pour chaque écart, l'ordre est le même et il n'est pas négociable :
+
+1. un test qui exprime la règle officielle, et qui **échoue**
+2. la correction, minimale, une ligne dans trois cas sur quatre
+3. la mise à jour du filet, dont le test figeait l'ancien comportement
+
+Le troisième commit est le seul moment du TP où l'on a le droit de modifier un test
+existant, et c'est parce que le comportement attendu a officiellement changé.
+
+Pour M2, une préparation a précédé le cycle : la comparaison était écrite à quatre
+endroits. Un `refactor:` l'a d'abord réunie dans `est_en_alerte`, ce qui a réduit
+la correction à **un seul caractère**. Préparer avant de corriger vaut mieux que
+corriger quatre fois.

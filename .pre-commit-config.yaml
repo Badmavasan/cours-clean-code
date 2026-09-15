@@ -1,0 +1,31 @@
+# Tous les crochets sont locaux : ils utilisent les outils deja installes dans
+# l'environnement virtuel. Aucun telechargement, donc rien ne casse en salle
+# quand le reseau est capricieux.
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: formatage
+        entry: ruff format --check
+        language: system
+        types: [python]
+
+      - id: ruff
+        name: lint
+        entry: ruff check --force-exclude
+        language: system
+        types: [python]
+
+      - id: xenon
+        name: barriere de complexite
+        entry: xenon --max-absolute B --max-modules A --max-average A inventaire kata_parking
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: pytest
+        name: tests unitaires
+        entry: pytest -q
+        language: system
+        pass_filenames: false
+        always_run: true

@@ -81,7 +81,43 @@ def par_cat(arts):
     return {categorie: round(valeur, 2) for categorie, valeur in totaux.items()}
 
 
+def message_de_rotation(a, ventes_sur_la_periode):
+    if ventes_sur_la_periode <= 0:
+        return "aucune vente pour " + a["ref"]
+    jours = math.floor(a["q"] / (ventes_sur_la_periode / JOURS_DE_LA_PERIODE_DE_VENTE))
+    if jours < SEUIL_RUPTURE_IMMINENTE_EN_JOURS:
+        return "RUPTURE IMMINENTE " + a["ref"]
+    if jours < SEUIL_SURVEILLANCE_EN_JOURS:
+        return "a surveiller " + a["ref"]
+    return None
+
+
+def messages_de_diagnostic(arts, ventes=None, cat=None, seuil_min=None):
+    messages = []
+    for a in arts:
+        if cat is not None and a["cat"] != cat:
+            continue
+        if seuil_min is not None and a["q"] < seuil_min:
+            continue
+        if a["q"] <= 0:
+            messages.append("stock vide " + a["ref"])
+            continue
+        if a["pu"] <= 0:
+            messages.append("prix invalide " + a["ref"])
+            continue
+        if a["q"] < a["seuil"]:
+            messages.append("ALERTE " + a["ref"] + " : " + str(a["q"]) + " restants")
+        if ventes is not None and a["ref"] in ventes:
+            message = message_de_rotation(a, ventes[a["ref"]])
+            if message is not None:
+                messages.append(message)
+    return messages
+
+
 def rapport(arts, ventes=None, cat=None, seuil_min=None, export=False, verbose=True, d=None):
+    if verbose:
+        for message in messages_de_diagnostic(arts, ventes, cat, seuil_min):
+            print(message)
     if d is None:
         d = datetime.datetime.now()
     res = {}
@@ -90,47 +126,22 @@ def rapport(arts, ventes=None, cat=None, seuil_min=None, export=False, verbose=T
     nb = 0
     liste_alerte = []
     for a in arts:
-        if cat is not None:
-            if a["cat"] != cat:
-                continue
-        if seuil_min is not None:
-            if a["q"] < seuil_min:
-                continue
-        if a["q"] > 0:
-            if a["pu"] > 0:
-                tot = tot + a["q"] * a["pu"]
-                nb = nb + 1
-                if a["q"] < a["seuil"]:
-                    liste_alerte.append(a["ref"])
-                    if verbose:
-                        print("ALERTE " + a["ref"] + " : " + str(a["q"]) + " restants")
-                if ventes is not None:
-                    if a["ref"] in ventes:
-                        if ventes[a["ref"]] > 0:
-                            j = math.floor(a["q"] / (ventes[a["ref"]] / JOURS_DE_LA_PERIODE_DE_VENTE))
-                            if j < SEUIL_RUPTURE_IMMINENTE_EN_JOURS:
-                                if verbose:
-                                    print("RUPTURE IMMINENTE " + a["ref"])
-                            elif j < SEUIL_SURVEILLANCE_EN_JOURS:
-                                if verbose:
-                                    print("a surveiller " + a["ref"])
-                        else:
-                            if verbose:
-                                print("aucune vente pour " + a["ref"])
-            else:
-                if verbose:
-                    print("prix invalide " + a["ref"])
-        else:
-            if verbose:
-                print("stock vide " + a["ref"])
+        if cat is not None and a["cat"] != cat:
+            continue
+        if seuil_min is not None and a["q"] < seuil_min:
+            continue
+        if a["q"] > 0 and a["pu"] > 0:
+            tot = tot + valeur_brute(a)
+            nb = nb + 1
+            if a["q"] < a["seuil"]:
+                liste_alerte.append(a["ref"])
     res["valeur"] = round(tot, 2)
     res["nb"] = nb
     res["alertes"] = liste_alerte
     res["ttc"] = round(tot * (1 + TAUX_TVA), 2)
     if export:
-        f = open("/tmp/rapport.json", "w")
-        f.write(json.dumps(res))
-        f.close()
+        with open("/tmp/rapport.json", "w", encoding="utf-8") as fichier:
+            fichier.write(json.dumps(res))
     return res
 
 

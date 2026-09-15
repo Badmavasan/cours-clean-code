@@ -1,0 +1,35 @@
+Preuve que le garde-fou bloque un commit fautif.
+
+On remplace TAUX_TVA = 0.2 par TAUX_TVA = 0.7 dans inventaire/inventaire.py,
+puis on tente de commiter.
+
+$ git add inventaire/inventaire.py
+$ git commit -m "fix: ajustement du taux de TVA"
+
+formatage................................................................Passed
+lint.....................................................................Passed
+barriere de complexite...................................................Passed
+tests unitaires..........................................................Failed
+- hook id: pytest
+- exit code: 1
+
+.............................F.........................................  [100%]
+=================================== FAILURES ===================================
+________________ test_rapport_ajoute_la_tva_de_vingt_pour_cent _________________
+
+    def test_rapport_ajoute_la_tva_de_vingt_pour_cent():
+>       assert generer_rapport([article(q=10, pu=10.0)], date_du_rapport="x")["ttc"] == 120.0
+E       assert 170.0 == 120.0
+
+inventaire/test_inventaire.py:197: AssertionError
+=========================== short test summary info ============================
+FAILED inventaire/test_inventaire.py::test_rapport_ajoute_la_tva_de_vingt_pour_cent
+
+
+$ echo $?
+1
+
+$ git log --oneline -1
+eae5462 chore: garde-fou pre-commit, quatre crochets locaux [Mission 4]
+
+Le dernier commit n'a pas bouge. Le commit fautif n'existe pas.

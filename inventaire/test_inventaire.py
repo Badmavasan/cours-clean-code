@@ -5,7 +5,19 @@ Quand le comportement observe contredit une regle metier, la regle concernee est
 citee dans le nom du test et l'ecart est reporte dans RAPPORT-QUALITE.md.
 """
 
-from inventaire import alerte, classer, cout, export_json, mouv, par_cat, rapport, rot, val
+from inventaire import (
+    alerte,
+    classer,
+    cout,
+    export_json,
+    message_de_rotation,
+    messages_de_diagnostic,
+    mouv,
+    par_cat,
+    rapport,
+    rot,
+    val,
+)
 
 
 def article(**surcharges):
@@ -229,3 +241,35 @@ def test_export_json_ecrit_le_rapport_et_renvoie_l_historique(tmp_path):
     historique = export_json({"valeur": 12.5}, chemin=str(chemin), hist=[])
     assert historique == [{"valeur": 12.5}]
     assert chemin.read_text(encoding="utf-8") == '[{"valeur": 12.5}]'
+
+
+# --- diagnostic, extrait du corps de rapport ------------------------------
+
+
+def test_un_stock_vide_est_signale():
+    assert messages_de_diagnostic([article(q=0)]) == ["stock vide VIS-M6"]
+
+
+def test_un_prix_invalide_est_signale():
+    assert messages_de_diagnostic([article(pu=0)]) == ["prix invalide VIS-M6"]
+
+
+def test_un_article_sous_son_seuil_est_signale_avec_sa_quantite():
+    messages = messages_de_diagnostic([article(q=5, seuil=10)])
+    assert messages == ["ALERTE VIS-M6 : 5 restants"]
+
+
+def test_moins_de_sept_jours_de_stock_est_une_rupture_imminente():
+    assert message_de_rotation(article(q=10), 300) == "RUPTURE IMMINENTE VIS-M6"
+
+
+def test_moins_de_trente_jours_de_stock_est_a_surveiller():
+    assert message_de_rotation(article(q=100), 300) == "a surveiller VIS-M6"
+
+
+def test_plus_de_trente_jours_de_stock_ne_dit_rien():
+    assert message_de_rotation(article(q=1000), 300) is None
+
+
+def test_une_periode_sans_vente_est_signalee():
+    assert message_de_rotation(article(q=10), 0) == "aucune vente pour VIS-M6"

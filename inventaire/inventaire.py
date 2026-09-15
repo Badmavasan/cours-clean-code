@@ -16,6 +16,10 @@ CATEGORIE_PAR_DEFAUT = "autre"
 JOURNAL = []
 
 
+class AucuneVenteSurLaPeriode(ValueError):
+    """Impossible de calculer une rotation sans vente sur la periode."""
+
+
 def valeur_brute(a):
     return a["q"] * a["pu"]
 
@@ -81,8 +85,8 @@ def classer_par_valeur(articles):
 
 
 def rotation_en_jours(article, ventes_sur_la_periode):
-    if ventes_sur_la_periode == 0:
-        return 0
+    if ventes_sur_la_periode <= 0:
+        raise AucuneVenteSurLaPeriode(article["ref"] + " : aucune vente")
     ventes_par_jour = ventes_sur_la_periode / JOURS_DE_LA_PERIODE_DE_VENTE
     return math.floor(article["q"] / ventes_par_jour)
 

@@ -67,3 +67,11 @@ def test_une_duree_negative_est_refusee():
 
 def test_une_minute_de_plus_que_soixante_douze_heures_declenche_la_fourriere():
     assert tarif(72 * 60 + 1) == 250.00
+
+
+def test_soixante_douze_heures_pile_restent_au_tarif_normal():
+    assert tarif(72 * 60) == 54.00
+
+
+def test_la_fourriere_ignore_l_abonnement_et_l_electrique():
+    assert tarif(100 * 60, est_abonne=True, est_electrique=True) == 250.00

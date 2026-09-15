@@ -50,3 +50,11 @@ def test_la_remise_abonne_s_applique_aussi_sur_le_plafond():
 
 def test_un_vehicule_electrique_est_gratuit_jusqu_a_une_heure():
     assert tarif(60, est_electrique=True) == 0.00
+
+
+def test_la_soixante_et_unieme_minute_est_payante_pour_un_electrique():
+    assert tarif(61, est_electrique=True) == 1.50
+
+
+def test_l_avantage_electrique_se_cumule_avec_l_abonnement():
+    assert tarif(61, est_abonne=True, est_electrique=True) == 0.90

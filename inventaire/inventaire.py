@@ -21,12 +21,12 @@ def valeur_brute(a):
     return a["q"] * a["pu"]
 
 
-def val(arts):
-    return round(sum(valeur_brute(a) for a in arts if a["q"] > 0), 2)
+def valeur_du_stock(articles):
+    return round(sum(valeur_brute(a) for a in articles if a["q"] > 0), 2)
 
 
-def alerte(arts):
-    return [a["ref"] for a in arts if a["q"] < a["seuil"]]
+def references_en_alerte(articles):
+    return [a["ref"] for a in articles if a["q"] < a["seuil"]]
 
 
 def mouv(a, q, t="out", j=None, force=False):
@@ -53,29 +53,30 @@ def quantite_a_commander(a):
     return a["seuil"] * MULTIPLICATEUR_DE_REAPPROVISIONNEMENT - a["q"]
 
 
-def cout(a):
-    if a["q"] >= a["seuil"]:
+def cout_de_reapprovisionnement(article):
+    if article["q"] >= article["seuil"]:
         return 0
-    quantite = quantite_a_commander(a)
-    montant = quantite * a["pu"]
+    quantite = quantite_a_commander(article)
+    montant = quantite * article["pu"]
     if quantite > QUANTITE_MINIMALE_POUR_REMISE:
         montant -= montant * TAUX_DE_REMISE_GROS_VOLUME
     return round(montant, 2)
 
 
-def classer(arts):
-    return sorted(arts, key=valeur_brute, reverse=True)
+def classer_par_valeur(articles):
+    return sorted(articles, key=valeur_brute, reverse=True)
 
 
-def rot(a, v):
-    if v == 0:
+def rotation_en_jours(article, ventes_sur_la_periode):
+    if ventes_sur_la_periode == 0:
         return 0
-    return math.floor(a["q"] / (v / JOURS_DE_LA_PERIODE_DE_VENTE))
+    ventes_par_jour = ventes_sur_la_periode / JOURS_DE_LA_PERIODE_DE_VENTE
+    return math.floor(article["q"] / ventes_par_jour)
 
 
-def par_cat(arts):
+def valeur_par_categorie(articles):
     totaux = {}
-    for a in arts:
+    for a in articles:
         categorie = a["cat"] if a["cat"] in CATEGORIES_CONNUES else CATEGORIE_PAR_DEFAUT
         totaux[categorie] = totaux.get(categorie, 0) + valeur_brute(a)
     return {categorie: round(valeur, 2) for categorie, valeur in totaux.items()}
@@ -151,31 +152,31 @@ def afficher_diagnostic(arts, ventes=None, cat=None, seuil_min=None):
         print(message)
 
 
-def rapport(arts, cat=None, seuil_min=None, d=None):
-    if d is None:
-        d = datetime.datetime.now()
-    res = {}
-    res["date"] = str(d)
-    tot = 0
-    nb = 0
-    liste_alerte = []
-    for a in articles_retenus(arts, cat, seuil_min):
-        if not est_comptabilisable(a):
+def generer_rapport(articles, categorie=None, quantite_minimale=None, date_du_rapport=None):
+    if date_du_rapport is None:
+        date_du_rapport = datetime.datetime.now()
+    total = 0
+    nombre_d_articles = 0
+    alertes = []
+    for article in articles_retenus(articles, categorie, quantite_minimale):
+        if not est_comptabilisable(article):
             continue
-        tot = tot + valeur_brute(a)
-        nb = nb + 1
-        if a["q"] < a["seuil"]:
-            liste_alerte.append(a["ref"])
-    res["valeur"] = round(tot, 2)
-    res["nb"] = nb
-    res["alertes"] = liste_alerte
-    res["ttc"] = round(tot * (1 + TAUX_TVA), 2)
-    return res
+        total = total + valeur_brute(article)
+        nombre_d_articles = nombre_d_articles + 1
+        if article["q"] < article["seuil"]:
+            alertes.append(article["ref"])
+    return {
+        "date": str(date_du_rapport),
+        "valeur": round(total, 2),
+        "nb": nombre_d_articles,
+        "alertes": alertes,
+        "ttc": round(total * (1 + TAUX_TVA), 2),
+    }
 
 
-def export_json(res, chemin="/tmp/inv.json", hist=None):
-    historique = [] if hist is None else hist
-    historique.append(res)
+def exporter_historique(rapport, chemin="/tmp/inv.json", historique=None):
+    entrees = [] if historique is None else historique
+    entrees.append(rapport)
     with open(chemin, "w", encoding="utf-8") as fichier:
-        fichier.write(json.dumps(historique))
-    return historique
+        fichier.write(json.dumps(entrees))
+    return entrees

@@ -24,8 +24,12 @@ def valeur_du_stock(articles):
     return round(sum(valeur_brute(a) for a in articles if a["q"] > 0), 2)
 
 
+def est_en_alerte(article):
+    return article["q"] < article["seuil"]
+
+
 def references_en_alerte(articles):
-    return [a["ref"] for a in articles if a["q"] < a["seuil"]]
+    return [a["ref"] for a in articles if est_en_alerte(a)]
 
 
 def enregistrer_mouvement(article, quantite, sens, journal):
@@ -63,7 +67,7 @@ def quantite_a_commander(a):
 
 
 def cout_de_reapprovisionnement(article):
-    if article["q"] >= article["seuil"]:
+    if not est_en_alerte(article):
         return 0
     quantite = quantite_a_commander(article)
     montant = quantite * article["pu"]
@@ -141,7 +145,7 @@ def messages_pour_un_article(a, ventes=None):
     if exclusion is not None:
         return [exclusion]
     messages = []
-    if a["q"] < a["seuil"]:
+    if est_en_alerte(a):
         messages.append("ALERTE " + a["ref"] + " : " + str(a["q"]) + " restants")
     rotation = message_de_rotation_si_connue(a, ventes)
     if rotation is not None:
@@ -172,7 +176,7 @@ def generer_rapport(articles, categorie=None, quantite_minimale=None, date_du_ra
             continue
         total = total + valeur_brute(article)
         nombre_d_articles = nombre_d_articles + 1
-        if article["q"] < article["seuil"]:
+        if est_en_alerte(article):
             alertes.append(article["ref"])
     return {
         "date": str(date_du_rapport),

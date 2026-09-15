@@ -6,7 +6,7 @@ Support de cours et travaux pratiques.
 
 ```
 jour1/
-  cours-jour1.md      support Marp, 117 slides, environ 3 h
+  cours-jour1.md      support Marp, 118 slides, environ 3 h
   cours-jour1.pdf     le même, exporté
   img/                les 6 schémas SVG utilisés dans les slides
   demos/              les 4 démonstrations faites en direct

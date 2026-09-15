@@ -9,6 +9,10 @@ MINUTES_PAR_JOURNEE = 24 * 60
 PART_PAYEE_PAR_UN_ABONNE = 0.60
 
 
+class DureeInvalide(ValueError):
+    """La duree de stationnement demandee n'a pas de sens."""
+
+
 def _minutes_gratuites(est_electrique):
     if est_electrique:
         return MINUTES_GRATUITES_VEHICULE_ELECTRIQUE
@@ -28,6 +32,8 @@ def _plafond(duree_en_minutes):
 
 
 def tarif(duree_en_minutes, est_abonne=False, est_electrique=False):
+    if duree_en_minutes < 0:
+        raise DureeInvalide(f"duree negative : {duree_en_minutes} minutes")
     montant = min(
         _montant_des_tranches(duree_en_minutes, est_electrique),
         _plafond(duree_en_minutes),

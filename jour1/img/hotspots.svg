@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 350" font-family="Helvetica,Arial,sans-serif">
+  <line x1="150" y1="300" x2="920" y2="300" stroke="#1f2933" stroke-width="2"/>
+  <line x1="150" y1="16"  x2="150" y2="300" stroke="#1f2933" stroke-width="2"/>
+  <text x="535" y="330" font-size="18" fill="#1f2933" text-anchor="middle">complexité du fichier</text>
+  <text x="20" y="150" font-size="18" fill="#1f2933">modifié</text>
+  <text x="20" y="172" font-size="18" fill="#1f2933">souvent</text>
+
+  <line x1="535" y1="16" x2="535" y2="300" stroke="#ccd3da" stroke-width="2" stroke-dasharray="6 6"/>
+  <line x1="150" y1="158" x2="920" y2="158" stroke="#ccd3da" stroke-width="2" stroke-dasharray="6 6"/>
+
+  <rect x="552" y="24" width="352" height="118" rx="8" fill="#fdf3f3" stroke="#e05252" stroke-width="3"/>
+  <text x="728" y="66" font-size="23" font-weight="700" fill="#e05252" text-anchor="middle">VOTRE PROBLÈME</text>
+  <text x="728" y="96" font-size="17" fill="#e05252" text-anchor="middle">complexe et touché tout le temps</text>
+  <text x="728" y="124" font-size="17" font-weight="700" fill="#e05252" text-anchor="middle">tout le budget va ici</text>
+
+  <rect x="166" y="24" width="352" height="118" rx="8" fill="#f3f7f5" stroke="#3aa76d" stroke-width="2"/>
+  <text x="342" y="76" font-size="19" font-weight="700" fill="#3aa76d" text-anchor="middle">Code vivant et sain</text>
+  <text x="342" y="106" font-size="17" fill="#3aa76d" text-anchor="middle">on n'y touche pas</text>
+
+  <rect x="166" y="174" width="352" height="112" rx="8" fill="#f6f7f8" stroke="#8a94a0" stroke-width="2"/>
+  <text x="342" y="222" font-size="19" font-weight="700" fill="#8a94a0" text-anchor="middle">Code dormant</text>
+  <text x="342" y="252" font-size="17" fill="#8a94a0" text-anchor="middle">à ignorer</text>
+
+  <rect x="552" y="174" width="352" height="112" rx="8" fill="#fdf8ef" stroke="#e8b04b" stroke-width="2"/>
+  <text x="728" y="222" font-size="19" font-weight="700" fill="#b8860b" text-anchor="middle">Complexe mais stable</text>
+  <text x="728" y="252" font-size="17" fill="#b8860b" text-anchor="middle">il ne gêne personne, on le laisse</text>
+</svg>

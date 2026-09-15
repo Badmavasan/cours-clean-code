@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 380" font-family="Helvetica,Arial,sans-serif">
+  <line x1="80" y1="330" x2="690" y2="330" stroke="#1f2933" stroke-width="2"/>
+  <line x1="80" y1="30"  x2="80"  y2="330" stroke="#1f2933" stroke-width="2"/>
+  <text x="86" y="24" font-size="16" fill="#8a94a0">fonctionnalités livrées par sprint</text>
+  <text x="640" y="352" font-size="16" fill="#8a94a0">sprints</text>
+  <g font-size="14" fill="#8a94a0">
+    <text x="74" y="352">0</text>
+    <text x="234" y="352">4</text>
+    <text x="354" y="352">8</text>
+    <text x="474" y="352">12</text>
+    <text x="594" y="352">16</text>
+  </g>
+
+  <polyline fill="none" stroke="#3aa76d" stroke-width="5"
+    points="80,212 140,190 200,178 260,170 320,164 380,160 440,157 500,155 560,153 620,152 680,151"/>
+  <polyline fill="none" stroke="#e05252" stroke-width="5"
+    points="80,212 140,172 200,163 260,182 320,208 380,234 440,258 500,280 560,296 620,310 680,320"/>
+
+  <circle cx="260" cy="182" r="7" fill="#e05252"/>
+  <text x="182" y="100" font-size="16" fill="#e05252" font-weight="700">on ajoute des points</text>
+  <text x="182" y="120" font-size="16" fill="#e05252" font-weight="700">pour compenser</text>
+  <line x1="252" y1="128" x2="259" y2="173" stroke="#e05252" stroke-width="2"/>
+
+  <rect x="706" y="60" width="246" height="86" rx="6" fill="#f3f7f5" stroke="#3aa76d" stroke-width="2"/>
+  <text x="722" y="88" font-size="17" font-weight="700" fill="#3aa76d">Avec filet de tests</text>
+  <text x="722" y="113" font-size="15" fill="#3aa76d">le coût de la modification</text>
+  <text x="722" y="133" font-size="15" fill="#3aa76d">reste stable</text>
+
+  <rect x="706" y="170" width="246" height="130" rx="6" fill="#fdf3f3" stroke="#e05252" stroke-width="2"/>
+  <text x="722" y="198" font-size="17" font-weight="700" fill="#e05252">Sans filet</text>
+  <text x="722" y="223" font-size="15" fill="#e05252">chaque ticket casse</text>
+  <text x="722" y="243" font-size="15" fill="#e05252">autre chose</text>
+  <text x="722" y="273" font-size="15" font-style="italic" fill="#e05252">puis « et si on repartait</text>
+  <text x="722" y="291" font-size="15" font-style="italic" fill="#e05252">de zéro ? »</text>
+</svg>

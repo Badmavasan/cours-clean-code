@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 310" font-family="Helvetica,Arial,sans-serif">
+  <g font-size="20" fill="#1f2933">
+    <text x="10" y="41">Pendant que vous écrivez</text>
+    <text x="10" y="99">Test automatisé</text>
+    <text x="10" y="157">Revue de code</text>
+    <text x="10" y="215">Recette</text>
+    <text x="10" y="273">Production</text>
+  </g>
+  <line x1="272" y1="12" x2="272" y2="292" stroke="#ccd3da" stroke-width="2"/>
+  <g>
+    <rect x="272" y="20"  width="26"  height="30" rx="4" fill="#3aa76d"/>
+    <rect x="272" y="78"  width="45"  height="30" rx="4" fill="#3aa76d"/>
+    <rect x="272" y="136" width="140" height="30" rx="4" fill="#e8b04b"/>
+    <rect x="272" y="194" width="380" height="30" rx="4" fill="#e07a52"/>
+    <rect x="272" y="252" width="668" height="30" rx="4" fill="#e05252"/>
+  </g>
+  <g font-size="19" font-weight="700" fill="#1f2933">
+    <text x="310" y="41">x1</text>
+    <text x="329" y="99">x2</text>
+    <text x="424" y="157">x10</text>
+    <text x="664" y="215">x50</text>
+    <text x="790" y="273" fill="#ffffff">x100 et plus</text>
+  </g>
+  <g font-size="16" fill="#8a94a0">
+    <text x="352" y="41">quelques secondes</text>
+    <text x="367" y="99">quelques secondes</text>
+    <text x="466" y="157">une heure, à deux</text>
+    <text x="704" y="215">une demi-journée, à trois</text>
+  </g>
+</svg>

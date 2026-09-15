@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 330" font-family="Helvetica,Arial,sans-serif">
+  <text x="300" y="24" font-size="20" font-weight="700" fill="#1f2933" text-anchor="middle">Imprudente</text>
+  <text x="690" y="24" font-size="20" font-weight="700" fill="#1f2933" text-anchor="middle">Prudente</text>
+  <text x="80" y="100" font-size="20" font-weight="700" fill="#1f2933" text-anchor="middle">Délibérée</text>
+  <text x="80" y="245" font-size="20" font-weight="700" fill="#1f2933" text-anchor="middle">Involontaire</text>
+
+  <rect x="150" y="38" width="300" height="130" rx="8" fill="#fdf3f3" stroke="#e05252" stroke-width="3"/>
+  <text x="300" y="86" font-size="18" fill="#e05252" text-anchor="middle">« On n'a pas le temps</text>
+  <text x="300" y="112" font-size="18" fill="#e05252" text-anchor="middle">de faire propre »</text>
+  <text x="300" y="145" font-size="15" fill="#8a94a0" text-anchor="middle">jamais remboursée</text>
+
+  <rect x="540" y="38" width="300" height="130" rx="8" fill="#f3f7f5" stroke="#3aa76d" stroke-width="3"/>
+  <text x="690" y="86" font-size="18" fill="#3aa76d" text-anchor="middle">« On livre maintenant,</text>
+  <text x="690" y="112" font-size="18" fill="#3aa76d" text-anchor="middle">on paiera les intérêts »</text>
+  <text x="690" y="145" font-size="15" fill="#8a94a0" text-anchor="middle">choix d'ingénierie légitime</text>
+
+  <rect x="150" y="184" width="300" height="130" rx="8" fill="#fdf3f3" stroke="#e05252" stroke-width="3"/>
+  <text x="300" y="232" font-size="18" fill="#e05252" text-anchor="middle">« C'est quoi</text>
+  <text x="300" y="258" font-size="18" fill="#e05252" text-anchor="middle">une couche métier ? »</text>
+  <text x="300" y="291" font-size="15" fill="#8a94a0" text-anchor="middle">on ne sait pas qu'on l'a</text>
+
+  <rect x="540" y="184" width="300" height="130" rx="8" fill="#f2f6fa" stroke="#3d7ea6" stroke-width="3"/>
+  <text x="690" y="232" font-size="18" fill="#3d7ea6" text-anchor="middle">« Maintenant qu'on a fini,</text>
+  <text x="690" y="258" font-size="18" fill="#3d7ea6" text-anchor="middle">on voit comment faire »</text>
+  <text x="690" y="291" font-size="15" fill="#8a94a0" text-anchor="middle">inévitable, et saine</text>
+</svg>

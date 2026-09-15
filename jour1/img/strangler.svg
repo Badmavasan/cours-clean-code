@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 330" font-family="Helvetica,Arial,sans-serif">
+  <g>
+    <text x="30" y="24" font-size="19" font-weight="700" fill="#1f2933">Mois 0</text>
+    <rect x="30" y="36" width="250" height="228" rx="8" fill="#fdf3f3" stroke="#e05252" stroke-width="3"/>
+    <text x="155" y="150" font-size="20" font-weight="700" fill="#e05252" text-anchor="middle">Ancien système</text>
+    <text x="155" y="180" font-size="16" fill="#e05252" text-anchor="middle">100 % du trafic</text>
+    <text x="155" y="294" font-size="16" fill="#8a94a0" text-anchor="middle">tout marche</text>
+  </g>
+  <g>
+    <text x="355" y="24" font-size="19" font-weight="700" fill="#1f2933">Mois 6</text>
+    <rect x="355" y="36" width="250" height="228" rx="8" fill="#fdf3f3" stroke="#e05252" stroke-width="3"/>
+    <rect x="368" y="50" width="224" height="54" rx="6" fill="#f3f7f5" stroke="#3aa76d" stroke-width="3"/>
+    <text x="480" y="83" font-size="16" font-weight="700" fill="#3aa76d" text-anchor="middle">recherche, refaite</text>
+    <rect x="368" y="116" width="224" height="54" rx="6" fill="#f3f7f5" stroke="#3aa76d" stroke-width="3"/>
+    <text x="480" y="149" font-size="16" font-weight="700" fill="#3aa76d" text-anchor="middle">timeline, refaite</text>
+    <text x="480" y="215" font-size="16" fill="#e05252" text-anchor="middle">le reste de l'ancien</text>
+    <text x="480" y="294" font-size="16" fill="#8a94a0" text-anchor="middle">tout marche</text>
+  </g>
+  <g>
+    <text x="680" y="24" font-size="19" font-weight="700" fill="#1f2933">Mois 24</text>
+    <rect x="680" y="36" width="250" height="228" rx="8" fill="#f3f7f5" stroke="#3aa76d" stroke-width="3"/>
+    <text x="805" y="150" font-size="20" font-weight="700" fill="#3aa76d" text-anchor="middle">Nouveau système</text>
+    <text x="805" y="180" font-size="16" fill="#3aa76d" text-anchor="middle">100 % du trafic</text>
+    <text x="805" y="294" font-size="16" fill="#8a94a0" text-anchor="middle">tout marche</text>
+  </g>
+  <defs>
+    <marker id="fb" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 z" fill="#8a94a0"/>
+    </marker>
+  </defs>
+  <line x1="292" y1="150" x2="342" y2="150" stroke="#8a94a0" stroke-width="4" marker-end="url(#fb)"/>
+  <line x1="617" y1="150" x2="667" y2="150" stroke="#8a94a0" stroke-width="4" marker-end="url(#fb)"/>
+</svg>

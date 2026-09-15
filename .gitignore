@@ -1,0 +1,19 @@
+# environnements Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# caches d'outils
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# sortie de la demo TDD, regenerable avec rejouer-demo.sh
+jour1/demos/demo-tdd/fizzbuzz-demo/
+
+# divers
+node_modules/
+.DS_Store

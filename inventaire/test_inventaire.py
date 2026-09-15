@@ -57,8 +57,8 @@ def test_alerte_signale_un_article_sous_son_seuil():
     assert references_en_alerte([article(q=5, seuil=10)]) == ["VIS-M6"]
 
 
-def test_alerte_ignore_un_article_pile_au_seuil_alors_que_la_regle_m2_l_exige():
-    assert references_en_alerte([article(q=10, seuil=10)]) == []
+def test_alerte_signale_un_article_pile_au_seuil():
+    assert references_en_alerte([article(q=10, seuil=10)]) == ["VIS-M6"]
 
 
 def test_alerte_ignore_un_article_au_dessus_du_seuil():
@@ -89,8 +89,8 @@ def test_cout_applique_la_remise_a_cent_une_unites():
     assert cout_de_reapprovisionnement(article(q=19, seuil=40, pu=1.0)) == 90.9
 
 
-def test_cout_est_nul_pour_un_article_pile_au_seuil():
-    assert cout_de_reapprovisionnement(article(q=10, seuil=10, pu=1.0)) == 0
+def test_cout_commande_pour_un_article_pile_au_seuil():
+    assert cout_de_reapprovisionnement(article(q=10, seuil=10, pu=1.0)) == 20.0
 
 
 # --- classer --------------------------------------------------------------
@@ -218,9 +218,9 @@ def test_rapport_filtre_sur_une_quantite_minimale():
     assert generer_rapport(articles, quantite_minimale=100, date_du_rapport="x")["nb"] == 1
 
 
-def test_rapport_omet_un_article_pile_au_seuil_de_ses_alertes():
+def test_rapport_signale_un_article_pile_au_seuil():
     res = generer_rapport([article(q=10, seuil=10)], date_du_rapport="x")
-    assert res["alertes"] == []
+    assert res["alertes"] == ["VIS-M6"]
 
 
 def test_rapport_ne_modifie_aucun_article():

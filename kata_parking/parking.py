@@ -17,5 +17,8 @@ def _plafond(duree_en_minutes):
     return journees * PLAFOND_PAR_JOURNEE
 
 
-def tarif(duree_en_minutes):
-    return min(_montant_des_tranches(duree_en_minutes), _plafond(duree_en_minutes))
+def tarif(duree_en_minutes, est_abonne=False):
+    montant = min(_montant_des_tranches(duree_en_minutes), _plafond(duree_en_minutes))
+    if est_abonne:
+        montant *= 0.60
+    return round(montant, 2)

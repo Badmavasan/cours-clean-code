@@ -92,13 +92,24 @@ def message_de_rotation(a, ventes_sur_la_periode):
     return None
 
 
+def correspond_a_la_categorie(a, cat):
+    return cat is None or a["cat"] == cat
+
+
+def atteint_la_quantite_minimale(a, seuil_min):
+    return seuil_min is None or a["q"] >= seuil_min
+
+
+def est_comptabilisable(a):
+    return a["q"] > 0 and a["pu"] > 0
+
+
 def articles_retenus(arts, cat=None, seuil_min=None):
-    for a in arts:
-        if cat is not None and a["cat"] != cat:
-            continue
-        if seuil_min is not None and a["q"] < seuil_min:
-            continue
-        yield a
+    return (
+        a
+        for a in arts
+        if correspond_a_la_categorie(a, cat) and atteint_la_quantite_minimale(a, seuil_min)
+    )
 
 
 def message_d_exclusion(a):
@@ -149,11 +160,12 @@ def rapport(arts, cat=None, seuil_min=None, d=None):
     nb = 0
     liste_alerte = []
     for a in articles_retenus(arts, cat, seuil_min):
-        if a["q"] > 0 and a["pu"] > 0:
-            tot = tot + valeur_brute(a)
-            nb = nb + 1
-            if a["q"] < a["seuil"]:
-                liste_alerte.append(a["ref"])
+        if not est_comptabilisable(a):
+            continue
+        tot = tot + valeur_brute(a)
+        nb = nb + 1
+        if a["q"] < a["seuil"]:
+            liste_alerte.append(a["ref"])
     res["valeur"] = round(tot, 2)
     res["nb"] = nb
     res["alertes"] = liste_alerte

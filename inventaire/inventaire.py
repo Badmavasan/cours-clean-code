@@ -92,13 +92,18 @@ def message_de_rotation(a, ventes_sur_la_periode):
     return None
 
 
-def messages_de_diagnostic(arts, ventes=None, cat=None, seuil_min=None):
-    messages = []
+def articles_retenus(arts, cat=None, seuil_min=None):
     for a in arts:
         if cat is not None and a["cat"] != cat:
             continue
         if seuil_min is not None and a["q"] < seuil_min:
             continue
+        yield a
+
+
+def messages_de_diagnostic(arts, ventes=None, cat=None, seuil_min=None):
+    messages = []
+    for a in articles_retenus(arts, cat, seuil_min):
         if a["q"] <= 0:
             messages.append("stock vide " + a["ref"])
             continue
@@ -125,11 +130,7 @@ def rapport(arts, ventes=None, cat=None, seuil_min=None, export=False, verbose=T
     tot = 0
     nb = 0
     liste_alerte = []
-    for a in arts:
-        if cat is not None and a["cat"] != cat:
-            continue
-        if seuil_min is not None and a["q"] < seuil_min:
-            continue
+    for a in articles_retenus(arts, cat, seuil_min):
         if a["q"] > 0 and a["pu"] > 0:
             tot = tot + valeur_brute(a)
             nb = nb + 1

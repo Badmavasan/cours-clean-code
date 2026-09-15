@@ -5,7 +5,10 @@ Quand le comportement observe contredit une regle metier, la regle concernee est
 citee dans le nom du test et l'ecart est reporte dans RAPPORT-QUALITE.md.
 """
 
+import pytest
+
 from inventaire import (
+    AucuneVenteSurLaPeriode,
     ajouter_au_stock,
     classer_par_valeur,
     cout_de_reapprovisionnement,
@@ -121,8 +124,9 @@ def test_rot_arrondit_a_l_entier_inferieur():
     assert rotation_en_jours(article(q=14), 300) == 1
 
 
-def test_rot_renvoie_zero_sans_vente_alors_que_la_regle_m7_exige_une_erreur():
-    assert rotation_en_jours(article(q=50), 0) == 0
+def test_rot_leve_une_erreur_sans_vente():
+    with pytest.raises(AucuneVenteSurLaPeriode, match="aucune vente"):
+        rotation_en_jours(article(q=50), 0)
 
 
 # --- par_cat --------------------------------------------------------------

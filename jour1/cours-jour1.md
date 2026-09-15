@@ -31,6 +31,7 @@ style: |
   section.compare h4:nth-of-type(2) { break-before: column; }
   section.compare pre, section.compare ul, section.compare p, section.compare table { break-inside: avoid; }
   section.compare pre { font-size: 16px; }
+  section.compare blockquote { column-span: all; margin-top: 14px; font-size: 24px; }
   section.compare table { font-size: 19px; }
   section.lead { background: #1f2933; color: #ffffff; }
   section.lead h1 { color: #ffffff; font-size: 56px; }

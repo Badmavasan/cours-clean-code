@@ -29,28 +29,23 @@ def alerte(arts):
     return [a["ref"] for a in arts if a["q"] < a["seuil"]]
 
 
-def mouv(a, q, t="out", j=[], force=False, log=True):
+def mouv(a, q, t="out", j=None, force=False):
     global DERNIER
     if q <= 0:
-        if log:
-            print("quantite invalide : " + str(q))
         return False
     if t == "out":
         a["q"] = a["q"] - q
-        if a["q"] < 0:
-            if force == False:
-                if log:
-                    print("stock insuffisant pour " + a["ref"])
-                return False
+        if a["q"] < 0 and not force:
+            return False
     elif t == "in":
         a["q"] = a["q"] + q
     else:
-        if log:
-            print("type de mouvement inconnu : " + str(t))
         return False
     DERNIER = DERNIER + 1
-    j.append({"id": DERNIER, "ref": a["ref"], "q": q, "t": t})
-    JOURNAL.append({"id": DERNIER, "ref": a["ref"], "q": q, "t": t})
+    ecriture = {"id": DERNIER, "ref": a["ref"], "q": q, "t": t}
+    if j is not None:
+        j.append(ecriture)
+    JOURNAL.append(dict(ecriture))
     return True
 
 

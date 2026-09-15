@@ -5,7 +5,7 @@ Quand le comportement observe contredit une regle metier, la regle concernee est
 citee dans le nom du test et l'ecart est reporte dans RAPPORT-QUALITE.md.
 """
 
-from inventaire import alerte, classer, cout, val
+from inventaire import alerte, classer, cout, rot, val
 
 
 def article(**surcharges):
@@ -95,3 +95,18 @@ def test_classer_ne_reordonne_pas_la_liste_recue():
     origine = [article(ref="A", q=1), article(ref="B", q=9)]
     classer(origine)
     assert [a["ref"] for a in origine] == ["A", "B"]
+
+
+# --- rot ------------------------------------------------------------------
+
+
+def test_rot_donne_les_jours_de_stock_restants():
+    assert rot(article(q=60), 30) == 60
+
+
+def test_rot_arrondit_a_l_entier_inferieur():
+    assert rot(article(q=14), 300) == 1
+
+
+def test_rot_renvoie_zero_sans_vente_alors_que_la_regle_m7_exige_une_erreur():
+    assert rot(article(q=50), 0) == 0

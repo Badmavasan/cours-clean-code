@@ -1,5 +1,5 @@
 import pytest
-from parking import tarif
+from parking import DureeInvalide, tarif
 
 
 def test_un_stationnement_de_trente_minutes_est_gratuit():
@@ -58,3 +58,8 @@ def test_la_soixante_et_unieme_minute_est_payante_pour_un_electrique():
 
 def test_l_avantage_electrique_se_cumule_avec_l_abonnement():
     assert tarif(61, est_abonne=True, est_electrique=True) == 0.90
+
+
+def test_une_duree_negative_est_refusee():
+    with pytest.raises(DureeInvalide, match="negative"):
+        tarif(-1)

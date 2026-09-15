@@ -5,6 +5,7 @@ MINUTES_PAR_TRANCHE = 30
 TARIF_PAR_TRANCHE = 1.50
 PLAFOND_PAR_JOURNEE = 18.00
 MINUTES_PAR_JOURNEE = 24 * 60
+PART_PAYEE_PAR_UN_ABONNE = 0.60
 
 
 def _montant_des_tranches(duree_en_minutes):
@@ -20,5 +21,5 @@ def _plafond(duree_en_minutes):
 def tarif(duree_en_minutes, est_abonne=False):
     montant = min(_montant_des_tranches(duree_en_minutes), _plafond(duree_en_minutes))
     if est_abonne:
-        montant *= 0.60
+        montant *= PART_PAYEE_PAR_UN_ABONNE
     return round(montant, 2)

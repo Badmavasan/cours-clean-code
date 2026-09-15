@@ -254,3 +254,69 @@ rencontrées, une clé absente par exemple. Le filet ne documente que le cas d'u
 période sans vente. Le refactoring ne conserve donc que celui-là, et c'est
 exactement la limite d'un filet de caractérisation : il protège ce qu'il couvre,
 rien de plus.
+
+---
+
+## 5. Tableau de bord après refactoring
+
+Mêmes commandes qu'en partie 1.
+
+```bash
+radon cc -s -a inventaire/inventaire.py
+```
+
+```
+inventaire/inventaire.py
+    F 164:0 generer_rapport - A (5)
+    F 43:0 retirer_du_stock - A (4)
+    F 86:0 valeur_par_categorie - A (4)
+    F 94:0 message_de_rotation - A (4)
+    F 117:0 articles_retenus - A (4)
+    F 139:0 messages_pour_un_article - A (4)
+    F 23:0 valeur_du_stock - A (3)
+    F 27:0 references_en_alerte - A (3)
+    F 65:0 cout_de_reapprovisionnement - A (3)
+    F 125:0 message_d_exclusion - A (3)
+    F 133:0 message_de_rotation_si_connue - A (3)
+    F 31:0 enregistrer_mouvement - A (2)
+    F 53:0 ajouter_au_stock - A (2)
+    F 79:0 rotation_en_jours - A (2)
+    F 105:0 correspond_a_la_categorie - A (2)
+    F 109:0 atteint_la_quantite_minimale - A (2)
+    F 113:0 est_comptabilisable - A (2)
+    F 152:0 messages_de_diagnostic - A (2)
+    F 159:0 afficher_diagnostic - A (2)
+    F 186:0 exporter_historique - A (2)
+    F 19:0 valeur_brute - A (1)
+    F 61:0 quantite_a_commander - A (1)
+    F 75:0 classer_par_valeur - A (1)
+
+23 blocks (classes, functions, methods) analyzed.
+Average complexity: A (2.652173913043478)
+```
+
+```bash
+radon mi -s inventaire/inventaire.py
+```
+
+```
+inventaire/inventaire.py - A (26.70)
+```
+
+| Mesure | Avant | Après |
+|---|---|---|
+| Complexité maximale | 22, rang D | 5, rang A |
+| Complexité moyenne | 5.9, rang B | A (2.652173913043478) |
+| Indice de maintenabilité | A (36.80) | A (26.70) |
+| Score pylint | 7.76 / 10 | 8.19 / 10 |
+| Problèmes ruff | 14 | 1 |
+| Tests sur le module | 0 | 0 |
+| Fonctions de plus de 4 paramètres | 2 | 0 |
+| Arguments par défaut mutables | 2 | 0 |
+| Attrape-tout d'exception | 1 | 0 |
+| `print` dans le code de calcul | 7 | 0 |
+
+Ce que ce delta prouve : la fonction que personne n'osait modifier est passée
+du rang D au rang A, le module est couvert par des tests qui décrivent son
+comportement réel, et les six écarts relevés sont documentés et toujours
+présents, prêts à être corrigés en mission 5.

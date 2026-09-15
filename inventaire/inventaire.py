@@ -14,7 +14,6 @@ SEUIL_SURVEILLANCE_EN_JOURS = 30
 CATEGORIES_CONNUES = ("outil", "consommable", "piece")
 CATEGORIE_PAR_DEFAUT = "autre"
 JOURNAL = []
-DERNIER = 0
 
 
 def valeur_brute(a):
@@ -30,9 +29,12 @@ def references_en_alerte(articles):
 
 
 def enregistrer_mouvement(article, quantite, sens, journal):
-    global DERNIER
-    DERNIER = DERNIER + 1
-    ecriture = {"id": DERNIER, "ref": article["ref"], "q": quantite, "t": sens}
+    ecriture = {
+        "id": len(JOURNAL) + 1,
+        "ref": article["ref"],
+        "q": quantite,
+        "t": sens,
+    }
     if journal is not None:
         journal.append(ecriture)
     JOURNAL.append(dict(ecriture))

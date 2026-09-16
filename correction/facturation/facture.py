@@ -1,22 +1,13 @@
 """Emission des factures d'abonnement."""
 
-from dataclasses import dataclass
 from datetime import date, datetime
 
 from facturation.abonnements import Abonnement
+from facturation.document import Facture
 from facturation.passerelles import ClientSMTP
 from facturation.tarifs import montant_hors_taxe, montant_toutes_taxes
 
 PREFIXE_DE_NUMERO = "FA"
-
-
-@dataclass
-class Facture:
-    numero: str
-    client: str
-    emise_le: date
-    montant_ht: float
-    montant_ttc: float
 
 
 class EmetteurDeFactures:

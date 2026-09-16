@@ -71,3 +71,22 @@ Le détail qui coûte cher : la constante `FORMULE_DECOUVERTE` doit vivre dans
 seule notion métier, deux fichiers à garder en phase. Le jour où quelqu'un ajoute la
 constante sans le prix, `prix_par_poste` lève `FormuleInconnue` sur une formule qui
 existe pourtant au catalogue.
+
+### D2, le code promotionnel `RENTREE` à 10 pour cent
+
+| | |
+|---|---|
+| Fichiers à rouvrir | **1** : `tarifs.py` |
+| Fonctions à modifier | **1** : `appliquer_code_promo` |
+| Tests couvrant directement la fonction | **4** : les deux cas de `BIENVENUE`, celui de `NOEL`, celui du code inconnu |
+| Tests rejoués en pratique | **25** |
+
+Le détail qui coûte cher : la fonction mélange deux choses. Le **routage** vers la bonne
+promotion, et le **calcul** de chacune. Chaque nouveau code ajoute une branche au
+routage, et le corps de `BIENVENUE` contient déjà un `if` imbriqué sur
+`premiere_facture`. La complexité du routage grandit avec le nombre de codes, celle du
+calcul avec les conditions de chacun, et les deux vivent au même endroit.
+
+Autre détail : la signature impose `premiere_facture` à **tous** les codes, alors qu'un
+seul s'en sert. `NOEL` reçoit un paramètre dont il n'a rien à faire, et `RENTREE` sera
+dans le même cas. C'est ISP appliqué à une signature de fonction.

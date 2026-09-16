@@ -5,6 +5,7 @@ from datetime import date, datetime
 from facturation.abonnements import Abonnement
 from facturation.document import Facture
 from facturation.passerelles import ClientSMTP
+from facturation.presentation import corps_de_la_facture, objet_du_courriel
 from facturation.tarifs import montant_hors_taxe, montant_toutes_taxes
 
 PREFIXE_DE_NUMERO = "FA"
@@ -36,15 +37,7 @@ class EmetteurDeFactures:
             montant_ht=montant_hors_taxe(abonnement, code_promo, premiere_facture),
             montant_ttc=montant_toutes_taxes(abonnement, code_promo, premiere_facture),
         )
-        corps = "\n".join(
-            [
-                f"Facture {facture.numero}",
-                f"Client        : {facture.client}",
-                f"Emise le      : {facture.emise_le.isoformat()}",
-                f"Formule       : {abonnement.formule}, {abonnement.nombre_de_postes} postes",
-                f"Montant HT    : {facture.montant_ht:.2f}",
-                f"Montant TTC   : {facture.montant_ttc:.2f}",
-            ]
+        self.passerelle.envoyer_courriel(
+            adresse, objet_du_courriel(facture), corps_de_la_facture(facture, abonnement)
         )
-        self.passerelle.envoyer_courriel(adresse, f"Votre facture {facture.numero}", corps)
         return facture

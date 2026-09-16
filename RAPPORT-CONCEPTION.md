@@ -50,3 +50,24 @@ le corps ne fait que lever une exception.
 
 Les deux autres demandent de lire un corps de fonction, mais un seul coup d'oeil suffit :
 un enchaînement de `if` pour **O**, une méthode qui fait trois choses pour **S**.
+
+---
+
+## 2. Le coût des trois demandes, avant
+
+Aucune ligne de code écrite pour remplir cette partie. On ouvre, on lit, on compte.
+
+### D1, la formule `decouverte` à 4 euros par poste
+
+| | |
+|---|---|
+| Fichiers à rouvrir | **2** : `abonnements.py` pour la constante, `tarifs.py` pour le prix |
+| Fonctions à modifier | **1** : `prix_par_poste`, plus un bloc de constantes |
+| Tests couvrant directement la fonction | **4** : `test_chaque_formule_a_son_prix_par_poste` compte pour 3 cas, plus `test_une_formule_inconnue_est_refusee` |
+| Tests rejoués en pratique | **25**, parce que personne ne rejoue un sous-ensemble |
+
+Le détail qui coûte cher : la constante `FORMULE_DECOUVERTE` doit vivre dans
+`abonnements.py`, à côté des trois autres, alors que le prix vit dans `tarifs.py`. Une
+seule notion métier, deux fichiers à garder en phase. Le jour où quelqu'un ajoute la
+constante sans le prix, `prix_par_poste` lève `FormuleInconnue` sur une formule qui
+existe pourtant au catalogue.

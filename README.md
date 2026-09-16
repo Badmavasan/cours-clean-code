@@ -11,7 +11,7 @@ jour1/                  clean code, indicateurs qualité, TDD unitaire
 tp1/                    5 h, audit, TDD strict, refactoring sous tests
   README.md             l'énoncé des 5 missions et le barème
   legacy/               le module à auditer
-  correction/           les missions 0, 1 et 2 rejouées commit par commit
+  correction/           le script qui produit la branche tp1-corrige
   solution/             l'état final, 76 tests verts, point de départ du TP2
   modeles/              le squelette du rapport qualité
   outils/               vérification de l'historique TDD
@@ -60,17 +60,23 @@ jour2/demos/demo-ouverture/rejouer-demo.sh    # ferme, ouvert, étendu
 
 Le second se termine en lançant le vrai script de correction du TP2.
 
-## Corriger en salle
+## Le corrigé du TP1
+
+Il vit sur une branche, `tp1-corrige`, qui contient **41 commits réels** rejouant les
+missions 0, 1 et 2 comme un étudiant les aurait faites.
 
 ```bash
-tp1/correction/rejouer-missions-0-1-2.sh
+git log --oneline origin/tp1-corrige
+git worktree add ../tp1-corrige tp1-corrige   # l'ouvrir a cote, sans quitter main
 ```
 
-Produit un dépôt de 41 commits qui rejoue les missions 0, 1 et 2 du TP1 comme un
-étudiant les aurait faites. Chaque commit se vérifie au moment où il est créé : un
-`red:` qui passerait au vert arrête le script. Utile à projeter pour débriefer, et
-comme référence de notation. Le détail de ce qu'il faut commenter en salle est dans
-`tp1/correction/README.md`.
+Chaque commit a été vérifié au moment où il a été créé : un `red:` qui passerait au
+vert arrête la génération. Les commits sont horodatés de 9h05 à 11h40, écart médian
+de trois minutes.
+
+Le script qui produit cette branche est `tp1/correction/rejouer-missions-0-1-2.sh`, et
+`tp1/correction/README.md` liste les trois moments à montrer au tableau pendant le
+débrief.
 
 ## Corriger les TP
 

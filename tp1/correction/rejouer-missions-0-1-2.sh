@@ -17,17 +17,29 @@ SORTIE="${1:-tp1-corrige}"
 ICI="$(cd "$(dirname "$0")" && pwd)"
 LEGACY="$ICI/../legacy"
 
+# On reprend l'identite git du poste, pour ne pas introduire un auteur inconnu.
+NOM="$(git config --get user.name || echo "Corrige TP1")"
+COURRIEL="$(git config --get user.email || echo "corrige@example.org")"
+
 rm -rf "$SORTIE"; mkdir -p "$SORTIE"; cd "$SORTIE"
 git init -q
-git config user.name "Corrige TP1"
-git config user.email "corrige@example.org"
+git config user.name "$NOM"
+git config user.email "$COURRIEL"
+
+# Horodatages realistes : le TP commence a 9h et la mission 2 se termine vers 11h40.
+# Sans ca, les 41 commits tombent dans la meme seconde et le controle de rythme
+# du script de correction signale un historique fabrique, a juste titre.
+HORLOGE=$(date -d "${DATE_DU_TP:-2026-09-15} 09:00:00" +%s)
+DECALAGE="+0200"
+avancer() { HORLOGE=$((HORLOGE + $1 * 60)); }
 
 suite_est_verte() { python3 -m pytest -q >/dev/null 2>&1; }
 
 commiter() {
   local prefixe="$1" message="$2"; shift 2
   git add "$@"
-  git commit -q -m "$prefixe: $message"
+  GIT_AUTHOR_DATE="@$HORLOGE $DECALAGE" GIT_COMMITTER_DATE="@$HORLOGE $DECALAGE" \
+    git commit -q -m "$prefixe: $message"
 }
 
 rouge() {
@@ -35,6 +47,7 @@ rouge() {
   if suite_est_verte; then
     echo "ARRET : le commit red '$message' est vert, ce n'est pas un rouge valide"; exit 1
   fi
+  avancer 3
   commiter red "$message" "$@"
   printf '  \033[31mred\033[0m      %s\n' "$message"
 }
@@ -44,6 +57,7 @@ vert() {
   if ! suite_est_verte; then
     echo "ARRET : le commit green '$message' n'est pas vert"; exit 1
   fi
+  avancer 2
   commiter green "$message" "$@"
   printf '  \033[32mgreen\033[0m    %s\n' "$message"
 }
@@ -53,6 +67,7 @@ bleu() {
   if ! suite_est_verte; then
     echo "ARRET : le commit refactor '$message' casse la suite"; exit 1
   fi
+  avancer 4
   commiter refactor "$message" "$@"
   printf '  \033[34mrefactor\033[0m %s\n' "$message"
 }
@@ -62,12 +77,14 @@ deja_vert() {
   if ! suite_est_verte; then
     echo "ARRET : le commit test '$message' devrait passer du premier coup"; exit 1
   fi
+  avancer 2
   commiter test "$message" "$@"
   printf '  \033[36mtest\033[0m     %s\n' "$message"
 }
 
 tache() {
   local message="$1"; shift
+  avancer 5
   commiter chore "$message" "$@"
   printf '  chore    %s\n' "$message"
 }
@@ -134,6 +151,7 @@ tache "copie du module legacy a auditer" inventaire/inventaire.py inventaire/exe
 echo ""
 echo "=== MISSION 1 : l'audit chiffre ==="
 
+avancer 20
 cat > RAPPORT-QUALITE.md <<'EOF'
 # Rapport qualité, module inventaire
 
@@ -292,6 +310,7 @@ Seules `maj_prix`, `STOCK`, `i`, `ref` et `p` sont réellement mortes.
 EOF
 tache "releve des metriques initiales" RAPPORT-QUALITE.md
 
+avancer 20
 cat >> RAPPORT-QUALITE.md <<'EOF'
 
 ---

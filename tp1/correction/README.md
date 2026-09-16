@@ -1,10 +1,52 @@
 # TP1, corrigé des missions 0, 1 et 2
 
-Ce dossier contient un script qui **rejoue le travail d'un étudiant commit par commit**.
+Le corrigé existe sous deux formes.
+
+**La branche `tp1-corrige`** contient les 41 commits réels, avec les vraies
+modifications et les vrais tests. C'est l'artefact à consulter.
+
+**Le script de ce dossier** est ce qui a produit cette branche. Il sert à la
+régénérer, à la modifier, ou à en faire une variante.
+
+---
+
+## Consulter la branche
+
+Sans quitter `main` :
+
+```bash
+git fetch origin
+git log --oneline origin/tp1-corrige
+git show origin/tp1-corrige~6
+git diff origin/tp1-corrige~7 origin/tp1-corrige~6
+```
+
+Pour l'ouvrir à côté, dans un dossier séparé, sans changer de branche :
+
+```bash
+git worktree add ../tp1-corrige tp1-corrige
+cd ../tp1-corrige
+pytest -q
+```
+
+Pour la supprimer ensuite :
+
+```bash
+git worktree remove ../tp1-corrige
+```
+
+Les commits sont horodatés de **9h05 à 11h40**, avec un écart médian de trois
+minutes entre deux commits. Le corrigé passe donc le contrôle de rythme du script
+de correction, ce qui n'était pas le cas quand tous les commits tombaient dans la
+même seconde.
+
+---
+
+## Régénérer la branche
 
 Il ne donne pas seulement le résultat, il donne le chemin. C'est le chemin qui est noté.
 
-## Le lancer
+### Le lancer
 
 ```bash
 python3 -m venv .venv
@@ -16,7 +58,7 @@ cd tp1-corrige
 git log --oneline
 ```
 
-## Ce qu'il produit
+### Ce qu'il produit
 
 Un dépôt git de **41 commits**.
 
@@ -32,7 +74,7 @@ Chaque commit se vérifie au moment où il est créé. Un commit `red:` dont la 
 passerait au vert arrête le script. Un commit `green:` ou `refactor:` qui casserait
 la suite l'arrête aussi. Le corrigé ne peut donc pas mentir sur son propre historique.
 
-## Ce que valent les livrables
+### Ce que valent les livrables
 
 | Mesure | Valeur |
 |---|---|
@@ -42,6 +84,8 @@ la suite l'arrête aussi. Le corrigé ne peut donc pas mentir sur son propre his
 | Complexité moyenne | A (1.83) |
 | ruff | 0 problème |
 | Barrière xenon | franchie |
+
+---
 
 ## Mission 0, ce qui est attendu
 
@@ -112,7 +156,8 @@ Les missions 3, 4 et 5. Le script de vérification signalera donc l'absence de
 `verifier.sh` et de `preuve-garde-fou.txt`, ce qui est normal à ce stade.
 
 ```bash
-../outils/verifier-historique.sh tp1-corrige 3
+git worktree add ../tp1-corrige tp1-corrige
+./outils/verifier-historique.sh ../tp1-corrige 3
 ```
 
 L'état final complet du TP1, missions 3 à 5 comprises, est dans `tp1/solution/`.

@@ -90,3 +90,34 @@ calcul avec les conditions de chacun, et les deux vivent au même endroit.
 Autre détail : la signature impose `premiere_facture` à **tous** les codes, alors qu'un
 seul s'en sert. `NOEL` reçoit un paramètre dont il n'a rien à faire, et `RENTREE` sera
 dans le même cas. C'est ISP appliqué à une signature de fonction.
+
+### D3, le palier de remise à 200 postes
+
+| | |
+|---|---|
+| Fichiers à rouvrir | **1** : `tarifs.py` |
+| Fonctions à modifier | **1** : `taux_de_remise_volume` |
+| Tests couvrant directement la fonction | **6** : le test paramétré couvre 1, 9, 10, 49, 50 et 500 postes |
+| Tests rejoués en pratique | **25** |
+
+Le détail qui coûte cher : l'ordre des `if` porte une règle métier **implicite**. Les
+paliers doivent être testés du plus grand au plus petit, sinon un abonnement de 200
+postes obtient 10 pour cent au lieu de 30. Rien dans le code ne dit que cet ordre est
+significatif.
+
+Bonne nouvelle mesurée : si on inverse les deux `if`, les cas à **50 et 500 postes
+échouent**. Deux tests sur six attrapent la régression. Le risque n'est donc pas une
+rupture silencieuse, c'est que la règle soit **invisible au lecteur**. Ouvrir ce point
+de variation avec une table triée rend l'ordre explicite, et rend l'ordre d'insertion
+sans importance.
+
+### Synthèse des trois demandes
+
+| Demande | Fichiers | Fonctions | Tests couvrant la fonction | Rejoués en pratique |
+|---|---|---|---|---|
+| D1 formule `decouverte` | 2 | 1 | 4 | 25 |
+| D2 code promo `RENTREE` | 1 | 1 | 4 | 25 |
+| D3 palier à 200 postes | 1 | 1 | 6 | 25 |
+
+Aucune des trois n'ajoute de complexité métier. Les trois obligent à rouvrir du code qui
+marchait. Et l'application ne fait que 200 lignes.

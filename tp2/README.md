@@ -63,6 +63,11 @@ git tag ouverture-terminee  # à la fin de la mission 3, première partie
 
 **Règle 4.** Tes tests sont verts avant et après chaque commit `refactor:`. Sans exception.
 
+Pour tout ce qui concerne le découpage des commits, ce que chaque préfixe a le droit de
+contenir, les messages, le rythme et les commandes de rattrapage, la section
+`Commiter : quand, quoi, comment` du sujet du TP1 s'applique telle quelle. Relis-la si
+tu hésites.
+
 **Règle 5.** Après l'étiquette `ouverture-terminee`, tu n'as plus le droit de supprimer
 ni de modifier une ligne dans un fichier métier existant. Seuls les ajouts de lignes
 d'import dans un fichier d'assemblage sont tolérés. C'est vérifié automatiquement.

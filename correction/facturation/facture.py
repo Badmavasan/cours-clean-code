@@ -4,23 +4,18 @@ from datetime import date, datetime
 
 from facturation.abonnements import Abonnement
 from facturation.document import Facture
+from facturation.numerotation import Numeroteur
 from facturation.passerelles import ClientSMTP
 from facturation.presentation import corps_de_la_facture, objet_du_courriel
 from facturation.tarifs import montant_hors_taxe, montant_toutes_taxes
-
-PREFIXE_DE_NUMERO = "FA"
 
 
 class EmetteurDeFactures:
     """Calcule, met en forme et envoie les factures."""
 
     def __init__(self) -> None:
-        self.compteur = 0
+        self.numeroteur = Numeroteur()
         self.passerelle = ClientSMTP()
-
-    def numeroter(self, emise_le: date) -> str:
-        self.compteur += 1
-        return f"{PREFIXE_DE_NUMERO}-{emise_le.year}-{self.compteur:04d}"
 
     def emettre(
         self,
@@ -31,7 +26,7 @@ class EmetteurDeFactures:
     ) -> Facture:
         emise_le = datetime.now().date()
         facture = Facture(
-            numero=self.numeroter(emise_le),
+            numero=self.numeroteur.suivant(emise_le),
             client=abonnement.client,
             emise_le=emise_le,
             montant_ht=montant_hors_taxe(abonnement, code_promo, premiere_facture),

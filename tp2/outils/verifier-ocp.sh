@@ -179,8 +179,13 @@ compter_tests() {
   if ! g worktree add --detach -q "$cible" "$ref" 2>/dev/null; then
     echo "?"; rm -rf "$tmp"; return
   fi
-  sortie="$(cd "$cible" && python3 -m pytest --collect-only -q 2>/dev/null \
-            | grep -oE '[0-9]+ (test|tests) collected' | grep -oE '^[0-9]+')"
+  local brut
+  brut="$(cd "$cible" && python3 -m pytest --collect-only -q 2>/dev/null)"
+  sortie="$(echo "$brut" | grep -oE '[0-9]+ (test|tests) collected' | grep -oE '^[0-9]+')"
+  if [ -z "$sortie" ]; then
+    sortie="$(echo "$brut" | grep -cE '::')"
+    [ "$sortie" = "0" ] && sortie=""
+  fi
   echo "${sortie:-?}"
   g worktree remove --force "$cible" >/dev/null 2>&1
   rm -rf "$tmp"
@@ -208,12 +213,13 @@ fi
 # ---------------------------------------------------------------------------
 titre "5. La suite est-elle verte"
 
-SORTIE="$(cd "$DEPOT" && python3 -m pytest -q 2>&1 | tail -1)"
-if echo "$SORTIE" | grep -qE "failed|error|no tests ran"; then
-  ko "la suite n'est pas verte : $SORTIE"
+SORTIE="$(cd "$DEPOT" && python3 -m pytest -q 2>&1)"; CODE=$?
+RESUME="$(echo "$SORTIE" | grep -iE "passed|failed|error|interrupted" | tail -1)"
+if [ "$CODE" -ne 0 ]; then
+  ko "la suite n'est pas verte : $RESUME"
   incr
 else
-  ok "suite verte : $SORTIE"
+  ok "suite verte : $RESUME"
 fi
 
 # ---------------------------------------------------------------------------

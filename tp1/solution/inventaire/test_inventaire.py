@@ -3,6 +3,8 @@
 from datetime import date
 
 import pytest
+from rapport import formater_rapport, generer_rapport
+
 from inventaire import (
     Article,
     AucuneVenteSurLaPeriode,
@@ -19,7 +21,6 @@ from inventaire import (
     valeur_du_stock,
     valeur_par_categorie,
 )
-from rapport import formater_rapport, generer_rapport
 
 
 def article(**surcharges) -> Article:
@@ -78,7 +79,14 @@ def test_seules_les_references_en_alerte_sont_renvoyees():
 
 @pytest.mark.parametrize(
     "quantite, niveau",
-    [(0, "rupture"), (4, "critique"), (5, "critique"), (6, "alerte"), (10, "alerte"), (11, "normal")],
+    [
+        (0, "rupture"),
+        (4, "critique"),
+        (5, "critique"),
+        (6, "alerte"),
+        (10, "alerte"),
+        (11, "normal"),
+    ],
 )
 def test_le_niveau_d_alerte_depend_de_la_distance_au_seuil(quantite, niveau):
     assert niveau_alerte(article(quantite=quantite, seuil_alerte=10)) == niveau

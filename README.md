@@ -11,7 +11,8 @@ jour1/                  clean code, indicateurs qualité, TDD unitaire
 tp1/                    5 h, audit, TDD strict, refactoring sous tests
   README.md             l'énoncé des 5 missions et le barème
   legacy/               le module à auditer
-  solution/             le corrigé complet, 76 tests verts
+  correction/           les missions 0, 1 et 2 rejouées commit par commit
+  solution/             l'état final, 76 tests verts, point de départ du TP2
   modeles/              le squelette du rapport qualité
   outils/               vérification de l'historique TDD
 
@@ -58,6 +59,18 @@ jour2/demos/demo-ouverture/rejouer-demo.sh    # ferme, ouvert, étendu
 ```
 
 Le second se termine en lançant le vrai script de correction du TP2.
+
+## Corriger en salle
+
+```bash
+tp1/correction/rejouer-missions-0-1-2.sh
+```
+
+Produit un dépôt de 41 commits qui rejoue les missions 0, 1 et 2 du TP1 comme un
+étudiant les aurait faites. Chaque commit se vérifie au moment où il est créé : un
+`red:` qui passerait au vert arrête le script. Utile à projeter pour débriefer, et
+comme référence de notation. Le détail de ce qu'il faut commenter en salle est dans
+`tp1/correction/README.md`.
 
 ## Corriger les TP
 

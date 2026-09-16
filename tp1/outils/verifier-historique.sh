@@ -117,12 +117,13 @@ else
       warn "impossible de rejouer $sha"
       continue
     fi
-    SORTIE="$(cd "$CIBLE" && python3 -m pytest -q 2>&1 | tail -1)"
+    SORTIE="$(cd "$CIBLE" && python3 -m pytest -q 2>&1)"
     CODE=$?
-    if echo "$SORTIE" | grep -qE "failed|error|no tests ran|ModuleNotFound"; then
-      ok "$sha est bien rouge   ($SORTIE)"
+    RESUME="$(echo "$SORTIE" | grep -iE "passed|failed|error|interrupted" | tail -1)"
+    if [ "$CODE" -ne 0 ]; then
+      ok "$sha est bien rouge   ($RESUME)"
     else
-      ko "$sha est VERT alors qu'il est annonce red   ($SORTIE)"
+      ko "$sha est VERT alors qu'il est annonce red   ($RESUME)"
       MENSONGES=$((MENSONGES + 1))
     fi
     REJOUES=$((REJOUES + 1))

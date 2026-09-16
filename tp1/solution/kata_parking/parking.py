@@ -1,9 +1,4 @@
-"""Tarificateur du parking des camions de livraison.
-
-Exigences E1 a E8 du sujet du TP1.
-"""
-
-from __future__ import annotations
+"""Tarificateur du parking des camions de livraison."""
 
 import math
 from datetime import datetime
@@ -24,21 +19,17 @@ class DureeInvalide(ValueError):
 
 
 def _minutes_gratuites(est_electrique: bool) -> int:
-    """E5 : un vehicule electrique branche double sa gratuite initiale."""
     if est_electrique:
         return MINUTES_GRATUITES_VEHICULE_ELECTRIQUE
     return MINUTES_GRATUITES_STANDARD
 
 
 def _montant_des_tranches(duree_en_minutes: int, est_electrique: bool) -> float:
-    """E1 et E2 : chaque demi-heure commencee au dela de la gratuite est due."""
     minutes_facturables = max(0, duree_en_minutes - _minutes_gratuites(est_electrique))
-    tranches = math.ceil(minutes_facturables / MINUTES_PAR_TRANCHE)
-    return tranches * TARIF_PAR_TRANCHE
+    return math.ceil(minutes_facturables / MINUTES_PAR_TRANCHE) * TARIF_PAR_TRANCHE
 
 
 def _plafond(duree_en_minutes: int) -> float:
-    """E3 : le plafond vaut 18 euros par tranche de 24 heures commencee."""
     journees = max(1, math.ceil(duree_en_minutes / MINUTES_PAR_JOURNEE))
     return journees * PLAFOND_PAR_JOURNEE
 
@@ -48,7 +39,6 @@ def tarif(
     est_abonne: bool = False,
     est_electrique: bool = False,
 ) -> float:
-    """Montant du sur un stationnement termine."""
     if duree_en_minutes < 0:
         raise DureeInvalide(f"duree negative : {duree_en_minutes} minutes")
     if duree_en_minutes > DUREE_MAXIMALE_AVANT_FOURRIERE:
@@ -68,11 +58,7 @@ def tarif_en_cours(
     est_abonne: bool = False,
     est_electrique: bool = False,
 ) -> float:
-    """E8 : montant du a l'instant present.
-
-    L'instant present est un parametre, jamais datetime.now(). C'est ce qui
-    rend le test reproductible dans dix ans, un samedi comme un lundi.
-    """
+    """L'instant present est un parametre, jamais datetime.now()."""
     if maintenant < entree:
         raise DureeInvalide("la sortie est anterieure a l'entree")
     minutes = int((maintenant - entree).total_seconds() // 60)

@@ -121,3 +121,59 @@ sans importance.
 
 Aucune des trois n'ajoute de complexité métier. Les trois obligent à rouvrir du code qui
 marchait. Et l'application ne fait que 200 lignes.
+
+---
+
+## 3. Le graphe des dépendances
+
+Commande utilisée :
+
+```bash
+grep -rn "^from \|^import " --include="*.py" . | grep -v test_
+```
+
+Sortie brute :
+
+```
+facturation/abonnements.py:3:from dataclasses import dataclass
+facturation/abonnements.py:4:from datetime import date
+facturation/tarifs.py:3:from facturation.abonnements import (
+facturation/facture.py:3:from dataclasses import dataclass
+facturation/facture.py:4:from datetime import date, datetime
+facturation/facture.py:6:from facturation.abonnements import Abonnement
+facturation/facture.py:7:from facturation.passerelles import ClientSMTP
+facturation/facture.py:8:from facturation.tarifs import montant_hors_taxe, montant_toutes_taxes
+facturation/passerelles.py:3:from abc import ABC, abstractmethod
+```
+
+### Lecture
+
+| Module | Ce qu'il importe | Sens | Dépendance à inverser ? |
+|---|---|---|---|
+| `abonnements.py` | `dataclasses`, `datetime` | bibliothèque standard | non |
+| `tarifs.py` | `facturation.abonnements` | métier vers métier | non |
+| `passerelles.py` | `abc` | bibliothèque standard | non |
+| `facture.py` | `facturation.abonnements`, `facturation.tarifs` | métier vers métier | non |
+| `facture.py` | **`facturation.passerelles`** | **métier vers technique** | **oui** |
+| `facture.py` | `datetime.datetime` puis `.now()` | dépendance cachée | **oui** |
+
+### Les deux candidats à l'inversion
+
+**L'import ligne 7 de `facture.py`.** C'est le seul endroit du projet où un module
+métier connaît un module technique. La flèche descend, elle doit remonter : après
+correction, ce sera `passerelles.py` qui connaîtra un protocole défini du côté du
+métier, et `facture.py` n'importera plus rien de `passerelles`.
+
+**L'appel `datetime.now()` ligne 40.** Celui-là ne se voit pas dans le graphe des
+imports, parce que `datetime` est une bibliothèque standard et que l'import paraît
+anodin. C'est pourtant une dépendance vers le monde extérieur, au même titre qu'un
+appel réseau. Elle ne s'inverse pas par un protocole, elle se règle en faisant entrer
+la date par un paramètre.
+
+### Ce que le graphe ne dit pas
+
+Il ne montre ni le couplage par **héritage** de `AbonnementAnnuel` vers
+`Abonnement`, ni le couplage par **interface** de `ClientSMTP` vers
+`PasserelleDeCommunication`. Les deux sont dans le même fichier que leur parent,
+donc invisibles à un `grep` sur les imports. Les violations **L** et **I** ne se
+trouvent pas par cette commande, seulement par la lecture.

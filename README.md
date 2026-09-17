@@ -16,14 +16,14 @@ tp1/                    5 h, audit, TDD strict, refactoring sous tests
   modeles/              le squelette du rapport qualité
   outils/               vérification de l'historique TDD
 
-jour2/                  SOLID et patrons de conception
-  cours-jour2.md        support Marp, 100 slides, environ 3 h
+jour2/                  les cinq principes SOLID
+  cours-jour2.md        support Marp, 94 slides, environ 3 h
   cours-jour2.pdf       le même, exporté
-  img/                  les 6 schémas SVG
-  demos/                les 3 démonstrations reproductibles
-tp2/                    5 h, ouvrir puis étendre sans rien modifier
+  img/                  les 8 schémas SVG
+  demos/                les 4 démonstrations
+tp2/                    5 h, cinq violations dans un code en service
   README.md             l'énoncé des 6 missions et le barème
-  depart/               le matériel de la mission 5
+  depart/               l'application de facturation, 25 tests verts
   modeles/              le squelette du rapport de conception
   outils/               vérification de l'extension additive
 ```
@@ -95,6 +95,7 @@ ligne supprimée dans un fichier métier existant.
 | Jour | Sujet | État |
 |---|---|---|
 | 1 | Craftsmanship, clean code, indicateurs, outils, TDD unitaire | fait |
-| 2 | SOLID, familles du GoF, six patrons, quand ne pas les utiliser | fait |
+| 2 | Les cinq principes SOLID, un par un, sur une application en service | fait |
 | 3 | Code legacy, tests de caractérisation, coutures, odeurs, débogage | à produire |
+| ? | **Patrons de conception du GoF**, objectif du module encore sans créneau | à placer |
 | 4 | Stratégie de tests, intégration et bout en bout, CI/CD, éco-conception | à produire |

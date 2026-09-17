@@ -62,8 +62,8 @@ Le second se termine en lançant le vrai script de correction du TP2.
 
 ## Le corrigé du TP1
 
-Il vit sur une branche, `tp1-corrige`, qui contient **72 commits réels** rejouant les
-missions 0 à 3 comme un étudiant les aurait faites.
+Il vit sur une branche, `tp1-corrige`, qui contient **90 commits réels** rejouant les
+cinq missions comme un étudiant les aurait faites.
 
 ```bash
 git log --oneline origin/tp1-corrige
@@ -72,7 +72,8 @@ git worktree add ../tp1-corrige tp1-corrige   # l'ouvrir a cote, sans quitter ma
 
 Chaque commit a été vérifié au moment où il a été créé : un `red:` qui passerait au
 vert arrête la génération. Les commits sont horodatés de 9h05 à 14h35, écart médian
-de trois minutes.
+de trois minutes, sur 395 minutes. Le corrigé passe le script de correction sans
+aucun signalement.
 
 Les scripts qui produisent cette branche sont dans `tp1/correction/`, et
 `tp1/correction/README.md` liste les trois moments à montrer au tableau pendant le

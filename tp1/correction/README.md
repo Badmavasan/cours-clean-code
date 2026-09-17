@@ -1,8 +1,8 @@
-# TP1, corrigé des missions 0 à 3
+# TP1, corrigé complet, missions 0 à 5
 
 Le corrigé existe sous deux formes.
 
-**La branche `tp1-corrige`** contient les 72 commits réels, avec les vraies
+**La branche `tp1-corrige`** contient les 90 commits réels, avec les vraies
 modifications et les vrais tests. C'est l'artefact à consulter.
 
 **Le script de ce dossier** est ce qui a produit cette branche. Il sert à la
@@ -60,7 +60,7 @@ git log --oneline
 
 ### Ce qu'il produit
 
-Un dépôt git de **41 commits** pour les missions 0 à 2, **72** une fois la mission 3 ajoutée.
+Un dépôt git de **41 commits** pour les missions 0 à 2, **72** avec la mission 3, **90** au complet.
 
 | Préfixe | Nombre |
 |---|---|
@@ -218,18 +218,98 @@ tombée en cinq commits dont aucun ne fait plus de dix lignes de diff.
 
 ---
 
-## Ce que le corrigé ne contient pas
+## Missions 4 et 5, ce qui est attendu
 
-Les missions 4 et 5. Le script de vérification signalera donc l'absence de
-`verifier.sh` et de `preuve-garde-fou.txt`, ce qui est normal à ce stade.
+18 commits, régénérables avec `./rejouer-missions-4-et-5.sh <depot>`. Leurs messages
+portent une étiquette `[Mission 4]` ou `[Mission 5]` en fin de ligne, pour retrouver
+chaque mission d'un coup d'oeil pendant le débrief. Les 72 premiers commits n'en ont
+pas, ils sont antérieurs à cette convention.
 
-```bash
-git worktree add ../tp1-corrige tp1-corrige
-./outils/verifier-historique.sh ../tp1-corrige 3
+### Mission 4, quatre commits `chore:`
+
+Les seuils dans `pyproject.toml`, `verifier.sh`, le garde-fou `pre-commit`, et la preuve.
+
+Les quatre crochets sont **locaux**, `language: system`. Ils utilisent les outils déjà
+installés dans l'environnement virtuel, donc aucun téléchargement, donc rien ne casse en
+salle quand le réseau est capricieux. Ça vaut la peine de le dire : la configuration
+d'exemple du cours pointe vers des dépôts distants, celle-ci non.
+
+`preuve-garde-fou.txt` contient une vraie sortie de terminal, capturée pendant la
+génération. On y remplace `TAUX_TVA = 0.2` par `0.7`, on tente de commiter, le crochet
+`tests unitaires` échoue, et `git log --oneline -1` montre que le dernier commit n'a pas
+bougé. Le commit fautif n'existe pas.
+
+### Mission 5, quatorze commits
+
+Le sujet demande deux écarts au minimum, le corrigé en traite **quatre** : M2, M5, M3 et
+M7. Chacun suit le même triptyque.
+
+| Écart | `red:` | `fix:` | `test:` |
+|---|---|---|---|
+| M2, seuil inclusif | le test de règle échoue | un caractère change | le filet est mis à jour |
+| M5, remise à 100 | idem | un caractère change | idem |
+| M3, retrait refusé | idem | deux lignes permutées | idem |
+| M7, période sans vente | idem | une exception remplace `return 0` | idem |
+
+### Les quatre points à faire passer en salle
+
+**On prépare avant de corriger.** Pour M2, la comparaison était écrite à quatre endroits.
+Un `refactor:` la réunit d'abord dans `est_en_alerte`, ce qui réduit la correction à un
+seul caractère. Ce commit de préparation arrive **avant** le test rouge, quand la suite
+est encore verte. Corriger quatre fois la même chose est un signal, pas une fatalité.
+
+**Un commit `fix:` laisse la suite rouge.** C'est contre-intuitif et c'est logique : la
+correction fait passer le test de règle, et casse du même coup le test du filet qui
+figeait l'ancien comportement. C'est le `test:` suivant qui remet tout au vert. Le
+corrigé le vérifie explicitement : après un `fix:`, il exige que le test de règle passe,
+pas que la suite entière soit verte.
+
+**`--no-verify` est utilisé, et seulement deux fois par cycle.** Un crochet qui exige une
+suite verte interdit mécaniquement le TDD. Les commits `red:` et `fix:` le contournent
+donc explicitement. C'est le seul usage légitime de `--no-verify` dans ce TP, et il est
+commenté dans le script. L'alternative en équipe est de déplacer les tests au stade
+`pre-push` et de ne garder que le formatage et le lint au moment du commit. La question
+tombera, autant avoir la réponse.
+
+**Le garde-fou a réellement attrapé une erreur pendant la génération.** Le commit `test:`
+de M7 a été refusé parce que les imports n'étaient pas triés. Ce n'est pas une anecdote :
+c'est la démonstration que le crochet sert à quelque chose, sur un dépôt qu'on croyait
+propre.
+
+### Le résultat final
+
+```
+./verifier.sh
+Required test coverage of 85.0% reached. Total coverage: 88.56%
+75 passed
+Tout est vert.
 ```
 
-Les quatre écarts sont donc toujours présents dans le code à la fin de la branche.
-C'est voulu : ils sont la matière de la mission 5.
+Et le contrôle de correction ne signale plus rien :
+
+```
+./outils/verifier-historique.sh <depot> 3
+Aucun probleme bloquant detecte.
+```
+
+90 commits, 15 `red:`, 11 `green:`, 4 `fix:`, 27 `refactor:`, 21 `test:`, 12 `chore:`,
+étalés sur 395 minutes avec un écart médian de trois minutes.
+
+---
+
+## Ce que le corrigé ne contient pas
+
+Rien. Le TP1 est couvert de bout en bout.
+
+Un seul point d'attention si vous régénérez : `pre-commit install` écrit dans
+`.git/hooks/`, qui est **partagé entre le dépôt principal et ses worktrees**. Régénérez
+donc les missions 4 et 5 dans un clone autonome, pas dans un `git worktree`, sinon vous
+installez le crochet dans votre dépôt de cours.
+
+```bash
+git clone --branch tp1-corrige --single-branch <votre-depot> /tmp/corrige
+cd /tmp/corrige && /chemin/vers/tp1/correction/rejouer-missions-4-et-5.sh .
+```
 
 ### La différence avec `tp1/solution/`
 

@@ -83,10 +83,26 @@ arrive à quelqu'un.
 | Principe | Fichier et ligne | Le symptôme observable | La conséquence concrète |
 |---|---|---|---|
 | **S** | `facturation/facture.py:33` | `emettre` calcule les montants (l. 44 et 45), assemble le corps du courriel (l. 48 à 57), puis déclenche l'envoi (l. 58) | trois acteurs peuvent demander de la modifier ; vérifier un montant oblige à capturer la sortie standard, comme le montrent les trois tests d'émission |
-| **O** | `facturation/tarifs.py:21` et `:39` | `prix_par_poste` enchaîne trois `if` sur la formule, `appliquer_code_promo` deux `if` sur le code | ajouter une formule rouvre une fonction couverte par 4 tests ; ajouter un code promo en rouvre une couverte par 4 autres |
+| **O** | `facturation/tarifs.py:21`, `:31` et `:39` | les **trois** fonctions de tarification enchaînent des `if` : sur la formule, sur le palier de volume, sur le code promo | chacune des trois demandes de lundi rouvre une de ces fonctions, couverte par 4, 6 et 4 tests |
 | **L** | `facturation/abonnements.py:48` | `AbonnementAnnuel.resilier` lève `ResiliationImpossible` alors que le contrat écrit lignes 19 à 30 promet de renvoyer la date de fin et n'autorise que `ValueError` | tout code qui parcourt une liste d'abonnements pour résilier ceux arrivés à terme plante dès qu'un abonnement annuel s'y trouve |
 | **I** | `facturation/passerelles.py:6` | `PasserelleDeCommunication` déclare 6 méthodes abstraites ; `ClientSMTP` en lève `NotImplementedError` sur 2 (l. 40 et 43) ; la facturation n'en appelle qu'une seule | un double de test doit implémenter 6 méthodes pour un besoin d'une ; et l'implémentation ment, ce qui viole aussi L |
 | **D** | `facturation/facture.py:7` et `:40` | le module métier importe la classe concrète `ClientSMTP`, et appelle `datetime.now()` au milieu du calcul | impossible d'écrire un test sur le numéro de facture d'une année donnée, ni sur le destinataire sans capturer la sortie standard |
+
+### Trois formes de la même violation
+
+Les trois fonctions violent OCP, mais pas de la même façon, et la forme décide de la
+technique d'ouverture.
+
+| Fonction | Ce qui varie | Forme | Comment on l'ouvre |
+|---|---|---|---|
+| `prix_par_poste` | un catalogue de **valeurs** indépendantes | aiguillage sur une clé | un dictionnaire |
+| `appliquer_code_promo` | un catalogue de **comportements** | aiguillage sur une clé, chaque cas a sa logique | un registre de fonctions |
+| `taux_de_remise_volume` | une **échelle ordonnée** de seuils | cascade dont l'ordre est la règle | une table triée |
+
+La différence tient en une phrase. Dans les deux premières, les cas sont **indépendants** :
+ajouter `decouverte` ne change rien à `pro`. Dans la troisième, les cas forment une
+**échelle** : l'ordre des `if` encode la règle « on teste du palier le plus haut vers le
+plus bas », et cette règle n'est écrite nulle part.
 
 ### Ce que la lecture des imports suffisait à trouver
 
@@ -174,8 +190,13 @@ cat >> RAPPORT-CONCEPTION.md <<'EOF'
 Le détail qui coûte cher : l'ordre des `if` porte une règle métier **implicite**. Les
 paliers doivent être testés du plus grand au plus petit, sinon un abonnement de 200
 postes obtient 10 pour cent au lieu de 30. Rien dans le code ne dit que cet ordre est
-significatif. C'est le genre de règle qu'on casse en refactorisant de bonne foi, et
-aucun des 6 tests actuels ne l'attraperait : ils testent des valeurs, pas l'ordre.
+significatif.
+
+Bonne nouvelle mesurée : si on inverse les deux `if`, les cas à **50 et 500 postes
+échouent**. Deux tests sur six attrapent la régression. Le risque n'est donc pas une
+rupture silencieuse, c'est que la règle soit **invisible au lecteur**. Ouvrir ce point
+de variation avec une table triée rend l'ordre explicite, et rend l'ordre d'insertion
+sans importance.
 
 ### Synthèse des trois demandes
 
